@@ -12,10 +12,25 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
-
+    var ubiq:NSURL?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-        // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        
+        window!.rootViewController = UINavigationController(rootViewController: ViewController())
+        
+        window!.makeKeyAndVisible()
+        
+        dispatch_async(dispatch_get_global_queue(0, 0), {
+            var fm:NSFileManager = NSFileManager.defaultManager()
+            var ubiq:NSURL? = fm.URLForUbiquityContainerIdentifier(nil)
+            dispatch_async(dispatch_get_main_queue(), {
+                self.ubiq = ubiq
+                })
+            })
+        
+        
         return true
     }
 
