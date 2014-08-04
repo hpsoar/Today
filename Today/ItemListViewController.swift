@@ -81,7 +81,8 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
         if !cell {
             cell = UITableViewCell(style: .Default, reuseIdentifier: identifier)
         }
-        cell!.textLabel.text = self.items.objectAtIndex(indexPath!.row) as NSString
+        var item = self.items.objectAtIndex(indexPath!.row) as Item
+        cell!.textLabel.text = item.title
         return cell
     }
     

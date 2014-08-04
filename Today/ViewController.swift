@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ItemSelectionViewControllerDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ItemSelectionViewControllerDelegate, TodayItemCellDelegate {
     
     var tableView:UITableView?
     
@@ -33,23 +33,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.tableView!.delegate = self
     }
     
-    func filePath() -> NSString {
-        var fm: NSFileManager = NSFileManager.defaultManager()
-        var docsurl = fm.URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false, error: nil)
-        
-        var ubiq:NSURL? = (UIApplication.sharedApplication().delegate as AppDelegate).ubiq
-        if ubiq {
-            docsurl = ubiq
-        }
-        
-        NSLog("%@", docsurl)
-        
-        var filename:NSString = docsurl.path.stringByAppendingPathComponent("test.dat")
-        
-        NSLog("%@", filename)
-       
-        return filename
-    }
     
     func loadModel() {
         self.items = DB.instance.itemsOfDay(NSDate())        
@@ -71,9 +54,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         var cell:TodayItemCell? = tableView.dequeueReusableCellWithIdentifier(identifier) as? TodayItemCell
         if !cell {
             cell = TodayItemCell(style: UITableViewCellStyle.Default, reuseIdentifier: identifier)
+            cell!.delegate = self
         }
      
-        cell!.updateWithObject(self.items!.objectAtIndex(indexPath.row) as NSString)
+        cell!.updateWithItem(self.items!.objectAtIndex(indexPath.row) as Item)
         
         return cell;
     }
@@ -92,6 +76,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 DB.instance.saveItems(self.items, ofDay: NSDate())
             })
         }
-    }    
+    }
+    
+    func showDetailForCell(cell: TodayItemCell)  {
+        var indexPath = self.tableView!.indexPathForCell(cell)
+        var item = self.items!.objectAtIndex(indexPath.row) as Item
+        
+        
+        
+        NSLog("%@", item)
+    }
+    
+    func deleteSelectedForCell(cell: TodayItemCell) {
+        
+    }
 }
 

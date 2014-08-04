@@ -8,10 +8,16 @@
 
 import UIKit
 
+protocol TodayItemCellDelegate {
+    func showDetailForCell(cell: TodayItemCell)
+    func deleteSelectedForCell(cell: TodayItemCell)
+}
+
 class TodayItemCell: UITableViewCell {
 
     var titleLabel: UILabel
     var container: UIView
+    var delegate: TodayItemCellDelegate?
     
     init(style: UITableViewCellStyle, reuseIdentifier: String) {
         container = UIView(frame: CGRectMake(5, 2, 310, 62))
@@ -24,6 +30,10 @@ class TodayItemCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.contentView.addSubview(container)
+        
+        var longPress = UILongPressGestureRecognizer(target: self, action: "showDetail")
+        self.userInteractionEnabled = true
+        self.addGestureRecognizer(longPress)
     }
 
     override func awakeFromNib() {
@@ -44,7 +54,11 @@ class TodayItemCell: UITableViewCell {
         }
     }
     
-    func updateWithObject(object:NSString) {
-        titleLabel.text = object
+    func updateWithItem(item:Item) {
+        titleLabel.text = item.title
+    }
+    
+    func showDetail() {
+        delegate?.showDetailForCell(self)
     }
 }

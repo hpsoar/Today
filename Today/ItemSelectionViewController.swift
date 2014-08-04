@@ -14,21 +14,24 @@ protocol ItemSelectionViewControllerDelegate {
 
 class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemListViewControllerDelegate {
     var delegate: ItemSelectionViewControllerDelegate?
-    var allItemsController: ItemListViewController?
+    var unselectedItemsController: ItemListViewController?
     var selectedItemsController: ItemListViewController?
     
     var itemAddingView: UIView?
     var rightView: UIView?
     var leftView: UIView?
     
+    var allItems: NSMutableArray?
+    
+    var changedItems: NSMutableArray?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.backgroundColor = UIColor.whiteColor()
+        
         // navi
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "done")
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
         
         // left
         var frame = CGRectInset(self.view.bounds, 0, 64)
@@ -39,14 +42,19 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
         // right
         frame.origin.x = frame.size.width
         self.setupRightViewWithFrame(frame)
+        
+        self.changedItems = NSMutableArray()
     }
     
     func done() {
-        delegate?.itemSelectionViewController(self, didSelectItems:self.selectedItemsController!.items)
-    }
-    
-    func cancel() {
-        delegate?.itemSelectionViewController(self, didSelectItems:nil)
+        if changedItems!.count > 0 {
+            changedItems!.removeAllObjects()
+            
+            delegate?.itemSelectionViewController(self, didSelectItems:self.selectedItemsController!.items)
+        }
+        else {
+            delegate?.itemSelectionViewController(self, didSelectItems: nil)
+        }
     }
     
     func setupLeftViewWithFrame(frame: CGRect) {
@@ -62,9 +70,9 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
     func setupRightViewWithFrame(frame: CGRect) {
         self.rightView = UIView(frame: frame)
         self.rightView!.layer.shadowColor = UIColor.lightGrayColor().CGColor
-        self.rightView!.layer.shadowRadius = 5
+        self.rightView!.layer.shadowRadius = 2
         self.rightView!.layer.shadowOpacity = 0.8
-        self.rightView!.layer.shadowOffset = CGSizeMake(-2, 2)
+        self.rightView!.layer.shadowOffset = CGSizeMake(-1, 1)
         self.rightView!.backgroundColor = UIColor.whiteColor()
         self.view.addSubview(self.rightView)
         
@@ -77,25 +85,32 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
         textField.delegate = self
         self.itemAddingView!.addSubview(textField)
         
-        var allItems = NSMutableArray(array: DB.instance.allItems())
+        self.allItems = NSMutableArray(array: DB.instance.allItems())
         var selectedItems = DB.instance.itemsOfDay(NSDate())
-        for item in selectedItems {
-            allItems.removeObject(item)
+        var unselectedItems = NSMutableArray(capacity: self.allItems!.count - selectedItems.count)
+        for item in self.allItems! {
+            if !selectedItems.containsObject(item) {
+                unselectedItems.addObject(item)
+            }
         }
-        self.allItemsController = ItemListViewController(items: allItems, searchable: true)
-        self.allItemsController!.delegate = self
+        self.unselectedItemsController = ItemListViewController(items: unselectedItems, searchable: true)
+        self.unselectedItemsController!.delegate = self
         
-        self.allItemsController!.view.frame = CGRectMake(0, 44, frame.size.width, frame.size.height - 44)
-        self.rightView!.addSubview(self.allItemsController!.view)
+        self.unselectedItemsController!.view.frame = CGRectMake(0, 44, frame.size.width, frame.size.height - 44)
+        self.rightView!.addSubview(self.unselectedItemsController!.view)
     }
     
     func textField(textField: UITextField!, shouldChangeCharactersInRange range: NSRange, replacementString string: String!) -> Bool {
         if string.compare("\n") == 0 {
             if !textField.text.isEmpty {
                 NSLog("%@", textField.text)
-                if (self.allItemsController!.addItem(textField.text as NSString)) {
+                var item = textField.text as NSString
+                if !self.allItems!.containsObject(item) {
+                    self.unselectedItemsController!.addItem(item)
+                    self.allItems!.addObject(item)
+                    DB.instance.saveItems(self.allItems)
                     textField.text = ""
-                    DB.instance.saveItems(self.allItemsController!.items)
+                    textField.resignFirstResponder()
                 }
             }
             return false
@@ -104,13 +119,21 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
     }
     
     func itemListViewController(controller: ItemListViewController, didSelectItemAtIndex index: NSInteger)  {
-        var item = controller.itemAtIndex(index) as NSString
+        var item:AnyObject! = controller.itemAtIndex(index)
+        
+        if changedItems!.containsObject(item) {
+            changedItems!.removeObject(item)
+        }
+        else {
+            changedItems!.addObject(item)
+        }
+        
         controller.removeItem(item)
-        if controller == self.allItemsController {
+        if controller == self.unselectedItemsController {
             self.selectedItemsController!.addItem(item)
         }
         else if controller == self.selectedItemsController {
-            self.allItemsController!.addItem(item)
+            self.unselectedItemsController!.addItem(item)
         }
     }
 }

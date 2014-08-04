@@ -21,6 +21,49 @@ import UIKit
 //    }
 //}
 
+class Item: NSObject, NSCoding {
+    init(title: NSString, checked: Bool, allowShare: Bool) {
+        self.title = title
+        self.checked = checked
+        self.allowShare = allowShare
+        self.frequency = 0
+    }
+    
+    convenience init() {
+        self.init(title: "", checked: false, allowShare: false)
+    }
+    
+    convenience init(title: NSString) {
+        self.init(title: title, checked: false, allowShare: false)
+    }
+    
+    init(coder aDecoder: NSCoder!) {
+        title = aDecoder.decodeObjectForKey("title") as NSString
+        checked = aDecoder.decodeBoolForKey("checked")
+        allowShare = aDecoder.decodeBoolForKey("allowShare")
+        frequency = aDecoder.decodeInt32ForKey("frequency")
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder!) {
+        aCoder.encodeObject(title, forKey: "title")
+        aCoder.encodeBool(checked, forKey: "checked")
+        aCoder.encodeBool(allowShare, forKey: "allowShare")
+        aCoder.encodeInt32(frequency, forKey: "frequency")
+    }
+    
+    override func isEqual(object: AnyObject!) -> Bool {
+        assert(object.isKindOfClass(Item), "object of wrong type", file: __FILE__, line: __LINE__)
+        
+        var item = object as Item
+        return item.title.isEqualToString(title)
+    }
+    
+    var title: NSString
+    var checked: Bool
+    var allowShare: Bool
+    var frequency: Int32
+}
+
 class DB: NSObject {
     class var instance: DB {
     dispatch_once(&Inner.token) {
@@ -43,11 +86,11 @@ class DB: NSObject {
     }
     
     func saveItems(items: NSArray?, ofDay date: NSDate) {
-        self.saveItems(items, toFile: self.filenameForItemsOfDate(date))
+        self.saveItems(items, filename: self.filenameForItemsOfDate(date))
     }
     
     func saveItems(items: NSArray?) {
-        self.saveItems(items, toFile: self.filenameForAllItems())
+        self.saveItems(items, filename: self.filenameForAllItems())
     }
     
     func filenameForAllItems() -> NSString {
@@ -66,8 +109,14 @@ class DB: NSObject {
         var data: NSData? = NSData.dataWithContentsOfFile(filepath, options: NSDataReadingOptions.DataReadingUncached, error: &error)
         if data {
             var items = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSArray
-            if items {
-                return items!
+            if items && items!.count > 0 {
+                var item:AnyObject = items!.objectAtIndex(0)
+                if item.isKindOfClass(Item) {
+                    return items!
+                }
+                else {
+                    return self.convertData(items!, filepath: filepath)
+                }
             }
         }
         else {
@@ -76,15 +125,31 @@ class DB: NSObject {
         return NSArray()
     }
     
-    func saveItems(items: NSArray?, toFile filename:NSString) {
-        if items {
-            var data: NSData = NSKeyedArchiver.archivedDataWithRootObject(items)
-            var filepath: NSString = self.filePath(filename)
-            var error: NSError?
-            if !data.writeToFile(filepath, options: NSDataWritingOptions.DataWritingAtomic, error: &error) {
-                NSLog("%@", error!)
-            }
+    func convertData(items: NSArray, filepath: NSString) -> NSArray {
+        var convertedItems = NSMutableArray(capacity: items.count)
+        for item in items {
+            var title = item as NSString
+            convertedItems.addObject(Item(title: title))
         }
+        self.saveItems(convertedItems, filepath: filepath)
+        
+        return convertedItems
+    }
+    
+    func saveItems(items: NSArray?, filename:NSString) {
+        if items {
+            var filepath: NSString = self.filePath(filename)
+            self.saveItems(items!, filepath: filepath)
+        }
+    }
+    
+    func saveItems(items: NSArray, filepath: NSString) {
+        var data: NSData = NSKeyedArchiver.archivedDataWithRootObject(items)
+        var error: NSError?
+        if !data.writeToFile(filepath, options: NSDataWritingOptions.DataWritingAtomic, error: &error) {
+            NSLog("%@", error!)
+        }
+
     }
     
     func filePath(filename: NSString) -> NSString {
