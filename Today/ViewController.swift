@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ItemSelectionViewControllerDelegate, TodayItemCellDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ItemSelectionViewControllerDelegate, TodayItemCellDelegate, ItemDetailViewControllerDelegate {
     
     var tableView:UITableView?
     
@@ -78,17 +78,34 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    var detailController: ItemDetailViewController?
+
     func showDetailForCell(cell: TodayItemCell)  {
-        var indexPath = self.tableView!.indexPathForCell(cell)
-        var item = self.items!.objectAtIndex(indexPath.row) as Item
-        
-        
-        
-        NSLog("%@", item)
+        if !detailController {
+            self.navigationItem.rightBarButtonItem = nil
+            var indexPath = self.tableView!.indexPathForCell(cell)
+            var item = self.items!.objectAtIndex(indexPath.row) as Item                
+            
+            detailController = ItemDetailViewController(item: item)
+            
+            detailController!.delegate = self
+            
+            detailController!.showFromView(cell)
+            
+            NSLog("%@", item)
+        }
     }
     
     func deleteSelectedForCell(cell: TodayItemCell) {
         
+    }
+    
+    func itemDetailViewController(controller: ItemDetailViewController, cancelSaveItem item: Item)  {
+        detailController = nil
+    }
+    
+    func itemDetailViewController(controller: ItemDetailViewController, didSaveItem item: Item) {
+        detailController = nil
     }
 }
 
