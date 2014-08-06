@@ -109,9 +109,8 @@ class SwitchView: BorderedView {
 }
 
 protocol ItemDetailViewControllerDelegate {
-    func itemDetailViewController(controller: ItemDetailViewController, didSaveItem: Item)
-    func itemDetailViewController(controller: ItemDetailViewController, cancelSaveItem: Item)
-    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem:Item, withTitle: String) -> Bool
+    func itemDetailViewControllerDismissed(controller: ItemDetailViewController)
+    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem item:Item, withNewItem newItem: Item?) -> Bool
 }
 
 class ItemDetailViewController: UIViewController, UITextFieldDelegate {
@@ -228,10 +227,15 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     
     func save() {
         if delegate {
-            if delegate!.itemDetailViewController(self, shouldUpdateItem: self.item, withTitle: self.titleField!.text) {
-                self.item.title = self.titleField!.text
-                self.window!.hidden = true
-                delegate!.itemDetailViewController(self, didSaveItem: self.item)
+            if !titleField!.text.isEmpty {
+                var item = Item(title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
+                if delegate!.itemDetailViewController(self, shouldUpdateItem: self.item, withNewItem: item) {
+                    self.window!.hidden = true
+                    delegate!.itemDetailViewControllerDismissed(self)
+                }
+            }
+            else {
+                self.titleField!.text = self.item.title
             }
         }
     }
@@ -239,7 +243,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     func cancel() {
         self.window!.hidden = true
         if delegate {
-            delegate!.itemDetailViewController(self, cancelSaveItem: self.item)
+            delegate!.itemDetailViewControllerDismissed(self)
         }
     }
     

@@ -12,17 +12,20 @@ protocol ItemListViewControllerDelegate {
     func itemListViewController(controller:ItemListViewController, didSelectItemAtIndex index:NSInteger)
 }
 
-class ItemListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ItemListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, TodayItemCellDelegate, ItemDetailViewControllerDelegate {
     var items: NSMutableArray
+    var date: NSDate?
     var searchable: Bool
     
     var tableView: UITableView?
     
     var delegate: ItemListViewControllerDelegate?
     
-    init(items: NSArray?, searchable: Bool) {
+    init(items: NSArray?, date: NSDate?, searchable: Bool) {
         self.items = NSMutableArray(array: items)
+        self.date = date
         self.searchable = searchable
+        
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -34,6 +37,8 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
         self.tableView!.delegate = self
         self.tableView!.tableFooterView = UIView(frame:CGRectZero)
         self.tableView!.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+        self.tableView!.separatorStyle = UITableViewCellSeparatorStyle.None
+        self.tableView!.tableFooterView = UIView(frame: CGRectZero);
         
         self.view.addSubview(self.tableView)
     }
@@ -74,15 +79,24 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
         return self.items.count
     }
 
+    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        var item: Item = self.items[indexPath.row] as Item
+        
+        // 5 pixels margin
+        var height = TodayItemCell.heightForTitle(item.title, withWidth: self.view.frame.size.width - 10) + 10
+        return height
+    }
 
     func tableView(tableView: UITableView?, cellForRowAtIndexPath indexPath: NSIndexPath?) -> UITableViewCell? {
-        let identifier = "list_item_cell"
-        var cell:UITableViewCell? = tableView?.dequeueReusableCellWithIdentifier(identifier) as? UITableViewCell
+        var cell:TodayItemCell? = tableView?.dequeueReusableCellWithIdentifier(TodayItemCell.identifier) as? TodayItemCell
         if !cell {
-            cell = UITableViewCell(style: .Default, reuseIdentifier: identifier)
+            cell = TodayItemCell(style: .Default, reuseIdentifier: TodayItemCell.identifier)
         }
         var item = self.items.objectAtIndex(indexPath!.row) as Item
-        cell!.textLabel.text = item.title
+        cell!.margin = 5
+        cell!.delegate = self
+        cell!.updateWithItem(item)
+        
         return cell
     }
     
@@ -90,5 +104,46 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
         if self.delegate {
             self.delegate!.itemListViewController(self, didSelectItemAtIndex: indexPath.row)
         }
+    }
+    
+    func deleteSelectedForCell(cell: TodayItemCell) {
+        
+    }
+    
+    func itemDetailViewControllerDismissed(controller: ItemDetailViewController)  {
+        detailController = nil
+    }
+    
+    var detailController: ItemDetailViewController?
+    func showDetailForCell(cell: TodayItemCell)  {
+        if !detailController {
+            var indexPath = self.tableView!.indexPathForCell(cell)
+            var item = self.items.objectAtIndex(indexPath.row) as Item
+            
+            detailController = ItemDetailViewController(item: item)
+            
+            detailController!.delegate = self
+            
+            detailController!.showFromView(cell)
+            
+            NSLog("%@", item)
+        }
+    }
+    
+    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem item: Item, withNewItem newItem: Item?) -> Bool {
+        if !newItem || self.items.containsObject(newItem) {
+            return false
+        }
+        
+        if self.date {
+            item.updateWithItem(newItem!)
+            DB.instance.saveItems(self.items, ofDay: self.date!)
+        }
+        else {
+            DB.instance.saveAllItems(self.items)
+        }
+        self.tableView!.reloadData()
+        
+        return true
     }
 }

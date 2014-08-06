@@ -61,7 +61,15 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
         self.leftView = UIView(frame: frame)
         self.view.addSubview(self.leftView)
         
-        self.selectedItemsController = ItemListViewController(items: DB.instance.itemsOfDay(NSDate()), searchable: false)
+        var titleLabel = UILabel(frame: CGRectMake(0, 0, frame.size.width, 44))
+        titleLabel.text = "Selected for today";
+        titleLabel.textAlignment = NSTextAlignment.Center
+        titleLabel.textColor = UIColor.greenColor()
+        self.leftView!.addSubview(titleLabel)
+        
+        var date = NSDate()
+        self.selectedItemsController = ItemListViewController(items: DB.instance.itemsOfDay(date), date: date, searchable: false)
+        self.selectedItemsController!.view.frame = CGRectMake(0, 44, frame.size.width, frame.size.height - 44)
         self.selectedItemsController!.delegate = self
         
         self.leftView!.addSubview(self.selectedItemsController!.view)
@@ -88,12 +96,12 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
         self.allItems = NSMutableArray(array: DB.instance.allItems())
         var selectedItems = DB.instance.itemsOfDay(NSDate())
         var unselectedItems = NSMutableArray(capacity: self.allItems!.count - selectedItems.count)
-        for item in self.allItems! {
+        for item : AnyObject in self.allItems! {
             if !selectedItems.containsObject(item) {
                 unselectedItems.addObject(item)
             }
         }
-        self.unselectedItemsController = ItemListViewController(items: unselectedItems, searchable: true)
+        self.unselectedItemsController = ItemListViewController(items: unselectedItems, date: nil, searchable: true)
         self.unselectedItemsController!.delegate = self
         
         self.unselectedItemsController!.view.frame = CGRectMake(0, 44, frame.size.width, frame.size.height - 44)
@@ -109,7 +117,7 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
                 if !self.allItems!.containsObject(item) {
                     self.unselectedItemsController!.addItem(item)
                     self.allItems!.addObject(item)
-                    DB.instance.saveItems(self.allItems)
+                    DB.instance.saveAllItems(self.allItems)
                     textField.text = ""
                     textField.resignFirstResponder()
                 }

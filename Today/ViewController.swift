@@ -53,20 +53,24 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
-        let identifier = "cell"
-        var cell:TodayItemCell? = tableView.dequeueReusableCellWithIdentifier(identifier) as? TodayItemCell
+        var cell:TodayItemCell? = tableView.dequeueReusableCellWithIdentifier(TodayItemCell.identifier) as? TodayItemCell
+        
         if !cell {
-            cell = TodayItemCell(style: UITableViewCellStyle.Default, reuseIdentifier: identifier)
-            cell!.delegate = self
+            cell = TodayItemCell(style: UITableViewCellStyle.Default, reuseIdentifier: TodayItemCell.identifier)
         }
      
+        cell!.delegate = self
+        cell!.margin = 5
         cell!.updateWithItem(self.items!.objectAtIndex(indexPath.row) as Item)
         
         return cell;
     }
     
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        return 66;
+        var item: Item = self.items![indexPath.row] as Item
+        
+        var height = TodayItemCell.heightForTitle(item.title, withWidth: self.view.frame.size.width) + 10
+        return height < 66 ? 66 : height
     }
 
     func itemSelectionViewController(controller: ItemSelectionViewController, didSelectItems items: NSArray?)  {
@@ -81,12 +85,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    func deleteSelectedForCell(cell: TodayItemCell) {
+        
+    }
+    
     var detailController: ItemDetailViewController?
-
+    
     func showDetailForCell(cell: TodayItemCell)  {
         if !detailController {
             var indexPath = self.tableView!.indexPathForCell(cell)
-            var item = self.items!.objectAtIndex(indexPath.row) as Item                
+            var item = self.items!.objectAtIndex(indexPath.row) as Item
             
             detailController = ItemDetailViewController(item: item)
             
@@ -98,27 +106,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    func deleteSelectedForCell(cell: TodayItemCell) {
+    func itemDetailViewControllerDismissed(controller: ItemDetailViewController) {
+        detailController = nil
+    }
+    
+    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem item: Item, withNewItem newItem: Item?) -> Bool {
+        if !newItem || self.items!.containsObject(newItem) {
+            return false
+        }
         
-    }
-    
-    func itemDetailViewController(controller: ItemDetailViewController, cancelSaveItem item: Item)  {
-        detailController = nil
-    }
-    
-    func itemDetailViewController(controller: ItemDetailViewController, didSaveItem item: Item) {
-        DB.instance.saveItems(self.items, ofDay: self.date!)
-        detailController = nil
+        if self.date {
+            item.updateWithItem(newItem!)
+            DB.instance.saveItems(self.items, ofDay: self.date!)
+        }
+        else {
+            DB.instance.saveAllItems(self.items)
+        }
+        
         self.tableView!.reloadData()
-    }
-    
-    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem item: Item, withTitle title: String) -> Bool {
-        if title.isEmpty {
-            return false
-        }
-        if self.items!.containsObject(title) {
-            return false
-        }
+        
         return true
     }
 }

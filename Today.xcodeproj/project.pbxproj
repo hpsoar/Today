@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B027144A198E68D000F39ACC /* ResizableTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0271449198E68D000F39ACC /* ResizableTextCell.swift */; };
 		B027144C198E79D100F39ACC /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B027144B198E79D100F39ACC /* ItemDetailViewController.swift */; };
 		B08D82DD198CDFC200012B98 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08D82DC198CDFC200012B98 /* AppDelegate.swift */; };
 		B08D82DF198CDFC200012B98 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08D82DE198CDFC200012B98 /* ViewController.swift */; };
@@ -30,7 +29,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B0271449198E68D000F39ACC /* ResizableTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResizableTextCell.swift; sourceTree = "<group>"; };
 		B027144B198E79D100F39ACC /* ItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		B08D82D7198CDFC200012B98 /* Today.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Today.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B08D82DB198CDFC200012B98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -95,7 +93,6 @@
 				B0A33CCF198CFB9F00A21B8D /* ItemSelectionViewController.swift */,
 				B0A33CD4198DE16600A21B8D /* ItemListViewController.swift */,
 				B0A33CD6198DE72B00A21B8D /* DB.swift */,
-				B0271449198E68D000F39ACC /* ResizableTextCell.swift */,
 				B027144B198E79D100F39ACC /* ItemDetailViewController.swift */,
 			);
 			path = Today;
@@ -230,7 +227,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B027144A198E68D000F39ACC /* ResizableTextCell.swift in Sources */,
 				B0A33CCE198CEB5C00A21B8D /* TodayItemCell.swift in Sources */,
 				B027144C198E79D100F39ACC /* ItemDetailViewController.swift in Sources */,
 				B0A33CD5198DE16600A21B8D /* ItemListViewController.swift in Sources */,

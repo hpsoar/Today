@@ -64,6 +64,13 @@ class Item: NSObject, NSCoding {
         }
     }
     
+    func updateWithItem(item: Item) {
+        title = item.title
+        checked = item.checked
+        allowShare = item.allowShare
+        // 
+    }
+    
     var title: NSString
     var checked: Bool
     var allowShare: Bool
@@ -95,7 +102,7 @@ class DB: NSObject {
         self.saveItems(items, filename: self.filenameForItemsOfDate(date))
     }
     
-    func saveItems(items: NSArray?) {
+    func saveAllItems(items: NSArray?) {
         self.saveItems(items, filename: self.filenameForAllItems())
     }
     
@@ -133,7 +140,7 @@ class DB: NSObject {
     
     func convertData(items: NSArray, filepath: NSString) -> NSArray {
         var convertedItems = NSMutableArray(capacity: items.count)
-        for item in items {
+        for item : AnyObject in items {
             var title = item as NSString
             convertedItems.addObject(Item(title: title))
         }

@@ -18,6 +18,17 @@ class TodayItemCell: UITableViewCell {
     var titleLabel: UILabel
     var container: UIView
     var delegate: TodayItemCellDelegate?
+    var margin: CGFloat = 5
+    var cellColor: UIColor = UIColor.redColor()
+    var cellColorSelected: UIColor = UIColor.greenColor()
+    
+    class var font: UIFont {
+        return UIFont.systemFontOfSize(17)
+    }
+    
+    class var identifier: String {
+        return NSStringFromClass(TodayItemCell)
+    }
     
     init(style: UITableViewCellStyle, reuseIdentifier: String) {
         container = UIView(frame: CGRectMake(5, 2, 310, 62))
@@ -25,6 +36,7 @@ class TodayItemCell: UITableViewCell {
         
         titleLabel = UILabel(frame: container.bounds)
         titleLabel.textAlignment = NSTextAlignment.Center
+        titleLabel.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
         container.addSubview(titleLabel)
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -40,16 +52,22 @@ class TodayItemCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        container.frame = CGRectInset(self.contentView.bounds, 5, 5);
+    }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         if (selected) {
-            container.backgroundColor = UIColor.greenColor()
+            container.backgroundColor = cellColorSelected
             self.accessoryType = UITableViewCellAccessoryType.Checkmark
         }
         else {
-            container.backgroundColor = UIColor.redColor()
+            container.backgroundColor = cellColor
             self.accessoryType = UITableViewCellAccessoryType.None
         }
     }
@@ -60,5 +78,9 @@ class TodayItemCell: UITableViewCell {
     
     func showDetail() {
         delegate?.showDetailForCell(self)
+    }
+    
+    class func heightForTitle(title:NSString, withWidth width: CGFloat) -> CGFloat {
+        return title.sizeWithFont(self.font, forWidth: width, lineBreakMode: NSLineBreakMode.ByCharWrapping).height
     }
 }
