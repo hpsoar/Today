@@ -104,7 +104,8 @@ class ItemSelectionViewController: UIViewController, UITextFieldDelegate, ItemLi
         if string.compare("\n") == 0 {
             if !textField.text.isEmpty {
                 NSLog("%@", textField.text)
-                var item = textField.text as NSString
+                var title = textField.text as NSString
+                var item = Item(title: title)
                 if !self.allItems!.containsObject(item) {
                     self.unselectedItemsController!.addItem(item)
                     self.allItems!.addObject(item)

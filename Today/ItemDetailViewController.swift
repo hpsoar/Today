@@ -109,17 +109,19 @@ class SwitchView: BorderedView {
 }
 
 protocol ItemDetailViewControllerDelegate {
-    func itemDetailViewController(controller: ItemDetailViewController, didSaveItem item: Item)
-    func itemDetailViewController(controller: ItemDetailViewController, cancelSaveItem item: Item)
+    func itemDetailViewController(controller: ItemDetailViewController, didSaveItem: Item)
+    func itemDetailViewController(controller: ItemDetailViewController, cancelSaveItem: Item)
+    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem:Item, withTitle: String) -> Bool
 }
 
-class ItemDetailViewController: UIViewController {
+class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     var item: Item
     
     var titleField: UITextField?
     var allowShareSwitch: SwitchView?
     var checkedSwitch: SwitchView?
-    var button: UIButton?
+    var saveBtn: UIButton?
+    var cancelBtn: UIButton?
     var buttonContainer: BorderedView?
     var container: UIView?
     var delegate: ItemDetailViewControllerDelegate?
@@ -136,6 +138,8 @@ class ItemDetailViewController: UIViewController {
         self.titleField!.text = item.title
         self.titleField!.clearButtonMode = UITextFieldViewMode.WhileEditing
         self.titleField!.textAlignment = NSTextAlignment.Center
+        self.titleField!.returnKeyType = UIReturnKeyType.Done
+        self.titleField!.delegate = self
         self.titleField!.textColor = UIColor.whiteColor()
         self.view.addSubview(self.titleField)
         
@@ -155,18 +159,26 @@ class ItemDetailViewController: UIViewController {
         self.container!.addSubview(self.buttonContainer)
         self.buttonContainer!.border(2).backgroundColor = UIColor.whiteColor()
         
-        self.button = UIButton(frame: CGRectZero)
-        self.button!.backgroundColor = UIColor.greenColor()
-        self.button!.layer.cornerRadius = 5
-        self.button!.setTitle("Save", forState: UIControlState.Normal)
-        self.button!.addTarget(self, action: "save", forControlEvents: UIControlEvents.TouchUpInside)
-        self.button!.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.buttonContainer!.addSubview(self.button)
+        self.saveBtn = UIButton(frame: CGRectZero)
+        self.saveBtn!.backgroundColor = UIColor.greenColor()
+        self.saveBtn!.layer.cornerRadius = 5
+        self.saveBtn!.setTitle("Save", forState: UIControlState.Normal)
+        self.saveBtn!.addTarget(self, action: "save", forControlEvents: UIControlEvents.TouchUpInside)
+        self.saveBtn!.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.buttonContainer!.addSubview(self.saveBtn)
         
-        var views = [ "btn": self.button!, "superview": self.buttonContainer! ]
-        self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[superview]-(<=1)-[btn(60)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views))
+        self.cancelBtn = UIButton(frame: CGRectZero)
+        self.cancelBtn!.backgroundColor = UIColor.lightGrayColor()
+        self.cancelBtn!.layer.cornerRadius = 5
+        self.cancelBtn!.setTitle("Cancel", forState: UIControlState.Normal)
+        self.cancelBtn!.addTarget(self, action: "cancel", forControlEvents: UIControlEvents.TouchUpInside)
+        self.cancelBtn!.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.buttonContainer!.addSubview(self.cancelBtn)
         
-        self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[superview]-(<=1)-[btn]", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: views))
+        var views = [ "saveBtn": self.saveBtn!, "superview": self.buttonContainer!, "cancelBtn": self.cancelBtn! ]
+        
+        self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-30-[saveBtn(70)]-[cancelBtn(70)]-30-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views))
+       self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[superview]-(<=1)-[saveBtn(60)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views))
         
         self.view.backgroundColor = UIColor.orangeColor()
     }
@@ -186,8 +198,8 @@ class ItemDetailViewController: UIViewController {
             
             self.container!.alpha = 0
             UIView.animateWithDuration(0.5, animations: {
-                self.view.frame = CGRectOffset(self.window!.bounds, 0, 20)
-                self.titleField!.frame = CGRectMake(0, 0, 320, 44)
+                    self.view.frame = CGRectOffset(self.window!.bounds, 0, 20)
+                    self.titleField!.frame = CGRectMake(0, 0, 320, 44)
                 }, completion: {
                     (finished: Bool) in
                     var width: CGFloat = 240
@@ -215,9 +227,28 @@ class ItemDetailViewController: UIViewController {
     }
     
     func save() {
+        if delegate {
+            if delegate!.itemDetailViewController(self, shouldUpdateItem: self.item, withTitle: self.titleField!.text) {
+                self.item.title = self.titleField!.text
+                self.window!.hidden = true
+                delegate!.itemDetailViewController(self, didSaveItem: self.item)
+            }
+        }
+    }
+    
+    func cancel() {
         self.window!.hidden = true
         if delegate {
-            delegate!.itemDetailViewController(self, didSaveItem: self.item)
+            delegate!.itemDetailViewController(self, cancelSaveItem: self.item)
         }
+    }
+    
+    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+        return true
+    }
+    
+    func textField(textField: UITextField!, shouldChangeCharactersInRange range: NSRange, replacementString string: String!) -> Bool {
+        
+        return true
     }
 }

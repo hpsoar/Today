@@ -52,10 +52,16 @@ class Item: NSObject, NSCoding {
     }
     
     override func isEqual(object: AnyObject!) -> Bool {
-        assert(object.isKindOfClass(Item), "object of wrong type", file: __FILE__, line: __LINE__)
+        assert(object.isKindOfClass(Item) || object.isKindOfClass(NSString), "object of wrong type", file: __FILE__, line: __LINE__)
         
-        var item = object as Item
-        return item.title.isEqualToString(title)
+        if object.isKindOfClass(NSString) {
+            var title = object as NSString
+            return self.title.isEqualToString(title)
+        }
+        else {
+            var item = object as Item
+            return item.title.isEqualToString(title)
+        }
     }
     
     var title: NSString
