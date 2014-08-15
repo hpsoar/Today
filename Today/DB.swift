@@ -23,6 +23,7 @@ import UIKit
 
 class Item: NSObject, NSCoding {
     init(title: NSString, checked: Bool, allowShare: Bool) {
+        self.id = NSUUID()
         self.title = title
         self.checked = checked
         self.allowShare = allowShare
@@ -38,6 +39,7 @@ class Item: NSObject, NSCoding {
     }
     
     init(coder aDecoder: NSCoder!) {
+        id = aDecoder.decodeObjectForKey("id") as NSUUID
         title = aDecoder.decodeObjectForKey("title") as NSString
         checked = aDecoder.decodeBoolForKey("checked")
         allowShare = aDecoder.decodeBoolForKey("allowShare")
@@ -45,6 +47,7 @@ class Item: NSObject, NSCoding {
     }
     
     func encodeWithCoder(aCoder: NSCoder!) {
+        aCoder.encodeObject(id, forKey: "id")
         aCoder.encodeObject(title, forKey: "title")
         aCoder.encodeBool(checked, forKey: "checked")
         aCoder.encodeBool(allowShare, forKey: "allowShare")
@@ -71,6 +74,7 @@ class Item: NSObject, NSCoding {
         // 
     }
     
+    var id: NSUUID
     var title: NSString
     var checked: Bool
     var allowShare: Bool
@@ -90,14 +94,64 @@ class DB: NSObject {
         static var token: dispatch_once_t = 0
     }
     
-    func allItems() -> NSArray {
-        return self.itemsOfFile(self.filenameForAllItems())
+    var meta: NSDictionary!;
+    
+    init()  {
+        super.init()
+        
+        var filepath = self.filePath("db.meta")
+        var error: NSError?
+        var data: NSData? = NSData.dataWithContentsOfFile(filepath, options: NSDataReadingOptions.DataReadingUncached, error: &error)
+        if data {
+            var meta = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary
+            if meta {
+                self.meta = meta!
+            }
+        }
+        if !self.meta {
+            self.meta = [ "version": "1.0" ]
+            data = NSKeyedArchiver.archivedDataWithRootObject(self.meta)
+            data!.writeToFile(filepath, atomically: true)
+        }
     }
     
-    func itemsOfDay(date: NSDate) -> NSArray {
-        return self.itemsOfFile(self.filenameForItemsOfDate(date))
+    // find
+    
+    func itemWithTitle(title: String) -> Item? {
+        return DB.findItemWithTitle(title, inItems: self.allItems())
     }
     
+    func itemWithTitle(title: String, ofDate date: NSDate) -> Item? {
+        return DB.findItemWithTitle(title, inItems: self.itemsOfDay(date))
+    }
+    
+    class func findItemWithTitle(title: String, inItems items: NSArray) -> Item? {
+        for object : AnyObject in items {
+            var item = object as Item
+            if item.title.isEqualToString(title) {
+                return item;
+            }
+        }
+        return nil
+    }
+    
+    func hasDuplicateItem(item: Item) -> Bool {
+        return DB.hasDuplicateItem(item, inItems: self.allItems())
+    }
+    
+    func hasDuplicateItem(item: Item, ofDay date: NSDate) -> Bool {
+        return DB.hasDuplicateItem(item, inItems: self.itemsOfDay(date))
+    }
+    
+    class func hasDuplicateItem(item: Item, inItems items: NSArray) -> Bool {
+        var item2 = self.findItemWithTitle(item.title, inItems: items)
+        if item2 {
+            return item2!.id.isEqual(item.id)
+        }
+        return false
+    }
+    
+    // save
     func saveItems(items: NSArray?, ofDay date: NSDate) {
         self.saveItems(items, filename: self.filenameForItemsOfDate(date))
     }
@@ -106,14 +160,29 @@ class DB: NSObject {
         self.saveItems(items, filename: self.filenameForAllItems())
     }
     
-    func filenameForAllItems() -> NSString {
-        return "all.items"
+    func saveItems(items: NSArray?, filename:NSString) {
+        if items {
+            var filepath: NSString = self.filePath(filename)
+            self.saveItems(items!, filepath: filepath)
+        }
     }
     
-    func filenameForItemsOfDate(date: NSDate) -> NSString {
-        var formmater = NSDateFormatter()
-        formmater.dateFormat = "YYYY-MM-dd"
-        return NSString.localizedStringWithFormat("%@.items", formmater.stringFromDate(date))
+    func saveItems(items: NSArray, filepath: NSString) {
+        var data: NSData = NSKeyedArchiver.archivedDataWithRootObject(items)
+        var error: NSError?
+        if !data.writeToFile(filepath, options: NSDataWritingOptions.DataWritingAtomic, error: &error) {
+            NSLog("%@", error!)
+        }
+    }
+
+    
+    // read
+    func allItems() -> NSArray {
+        return self.itemsOfFile(self.filenameForAllItems())
+    }
+    
+    func itemsOfDay(date: NSDate) -> NSArray {
+        return self.itemsOfFile(self.filenameForItemsOfDate(date))
     }
     
     func itemsOfFile(filename: NSString) -> NSArray {
@@ -138,6 +207,17 @@ class DB: NSObject {
         return NSArray()
     }
     
+    // read & save helper
+    func filenameForAllItems() -> NSString {
+        return "all.items"
+    }
+    
+    func filenameForItemsOfDate(date: NSDate) -> NSString {
+        var formmater = NSDateFormatter()
+        formmater.dateFormat = "YYYY-MM-dd"
+        return NSString.localizedStringWithFormat("%@.items", formmater.stringFromDate(date))
+    }
+    
     func convertData(items: NSArray, filepath: NSString) -> NSArray {
         var convertedItems = NSMutableArray(capacity: items.count)
         for item : AnyObject in items {
@@ -147,22 +227,6 @@ class DB: NSObject {
         self.saveItems(convertedItems, filepath: filepath)
         
         return convertedItems
-    }
-    
-    func saveItems(items: NSArray?, filename:NSString) {
-        if items {
-            var filepath: NSString = self.filePath(filename)
-            self.saveItems(items!, filepath: filepath)
-        }
-    }
-    
-    func saveItems(items: NSArray, filepath: NSString) {
-        var data: NSData = NSKeyedArchiver.archivedDataWithRootObject(items)
-        var error: NSError?
-        if !data.writeToFile(filepath, options: NSDataWritingOptions.DataWritingAtomic, error: &error) {
-            NSLog("%@", error!)
-        }
-
     }
     
     func filePath(filename: NSString) -> NSString {

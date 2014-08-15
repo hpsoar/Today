@@ -16,6 +16,7 @@
 		B0A33CD0198CFB9F00A21B8D /* ItemSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CCF198CFB9F00A21B8D /* ItemSelectionViewController.swift */; };
 		B0A33CD5198DE16600A21B8D /* ItemListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CD4198DE16600A21B8D /* ItemListViewController.swift */; };
 		B0A33CD7198DE72C00A21B8D /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CD6198DE72B00A21B8D /* DB.swift */; };
+		B0A82EC6199CEC840012FACB /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A82EC5199CEC840012FACB /* Utility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		B0A33CD1198D25E700A21B8D /* Today.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Today.entitlements; sourceTree = "<group>"; };
 		B0A33CD4198DE16600A21B8D /* ItemListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemListViewController.swift; sourceTree = "<group>"; };
 		B0A33CD6198DE72B00A21B8D /* DB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
+		B0A82EC5199CEC840012FACB /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 		B08D82CE198CDFC100012B98 = {
 			isa = PBXGroup;
 			children = (
+				B0A82EC5199CEC840012FACB /* Utility.swift */,
 				B08D82D9198CDFC200012B98 /* Today */,
 				B08D82EC198CDFC200012B98 /* TodayTests */,
 				B08D82D8198CDFC200012B98 /* Products */,
@@ -231,6 +234,7 @@
 				B027144C198E79D100F39ACC /* ItemDetailViewController.swift in Sources */,
 				B0A33CD5198DE16600A21B8D /* ItemListViewController.swift in Sources */,
 				B0A33CD0198CFB9F00A21B8D /* ItemSelectionViewController.swift in Sources */,
+				B0A82EC6199CEC840012FACB /* Utility.swift in Sources */,
 				B08D82DF198CDFC200012B98 /* ViewController.swift in Sources */,
 				B08D82DD198CDFC200012B98 /* AppDelegate.swift in Sources */,
 				B0A33CD7198DE72C00A21B8D /* DB.swift in Sources */,
