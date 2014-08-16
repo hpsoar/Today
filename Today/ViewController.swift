@@ -12,7 +12,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var tableView:UITableView?
     
-    var items:NSArray?
+    var items = Item[]()
     
     var date:NSDate?
     
@@ -44,6 +44,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.date = NSDate()
 //        self.items = DB.instance.itemsOfDay(self.date!)
         
+        //self.items!.extend(<#sequence: S#>) = DB.mockItems()
         self.items = DB.mockItems()
     }
     
@@ -68,7 +69,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        return self.items!.count;
+        return self.items.count;
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
@@ -80,14 +81,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
      
         cell!.delegate = self
         cell!.margin = 5
-        cell!.updateWithItem(self.items!.objectAtIndex(indexPath.row) as Item)
+        cell!.updateWithItem(self.items[indexPath.row])
         cell!.selected = false
         
         return cell;
     }
     
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        var item: Item = self.items![indexPath.row] as Item
+        var item: Item = self.items[indexPath.row] as Item
         
         var height = TodayItemCell.heightForTitle(item.title, withWidth: self.view.frame.size.width) + 10
         return height < 66 ? 66 : height
@@ -105,7 +106,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func showDetailForCell(cell: TodayItemCell)  {
         if !self.detailController {
             var indexPath = self.tableView!.indexPathForCell(cell)
-            var item = self.items!.objectAtIndex(indexPath.row) as Item
+            var item = self.items[indexPath.row]
             
             var detailController = ItemDetailViewController(item: item)
             
@@ -123,21 +124,24 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         detailController = nil
     }
     
-    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem item: Item, withNewItem newItem: Item?) -> Bool {
-        if !newItem || self.items!.containsObject(newItem) {
+    func itemDetailViewController(controller: ItemDetailViewController, finishedEditingItem item: Item?, withNewItem newItem: Item) -> Bool  {
+        assert(self.date, "date can't be nil")
+        assert(self.tableView, "tableView can't be nil")
+        
+        println(newItem.title)
+        if DB.instance.hasDuplicateItem(newItem, ofDay: self.date!) {
             return false
         }
         
-        if self.date {
-            item.updateWithItem(newItem!)
-            DB.instance.saveItems(self.items, ofDay: self.date!)
+        if item {
+            item!.updateWithItem(newItem)
         }
         else {
-            DB.instance.saveAllItems(self.items)
+            self.items.append(newItem)
         }
         
+        DB.instance.saveItems(self.items, ofDay: self.date!)
         self.tableView!.reloadData()
-        
         return true
     }
 }

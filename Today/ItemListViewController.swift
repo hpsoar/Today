@@ -130,8 +130,8 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem item: Item, withNewItem newItem: Item?) -> Bool {
-        if !newItem {
+    func itemDetailViewController(controller: ItemDetailViewController, finishedEditingItem item: Item?, withNewItem newItem: Item) -> Bool {
+        if !item {
             return false
         }
         
@@ -139,16 +139,16 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
             // if the item belongs to today
             // 1. check duplication in today's items
             // 2. check duplication in all items
-            if !DB.instance.hasDuplicateItem(newItem!, ofDay: self.date!) && !DB.instance.hasDuplicateItem(newItem!) {
-                item.updateWithItem(newItem!)
+            if !DB.instance.hasDuplicateItem(newItem, ofDay: self.date!) && !DB.instance.hasDuplicateItem(newItem) {
+                item!.updateWithItem(newItem)
                 DB.instance.saveItems(self.items, ofDay: self.date!)
             }
         }
         else {
             // if item belongs to all item collection
             // 1. check duplication if all item collection
-            if !DB.instance.hasDuplicateItem(newItem!) {
-                item.updateWithItem(newItem!)
+            if !DB.instance.hasDuplicateItem(newItem) {
+                item!.updateWithItem(newItem)
                 DB.instance.saveAllItems(self.items)
             }
         }

@@ -163,7 +163,7 @@ class SwitchView: BorderedView {
 
 protocol ItemDetailViewControllerDelegate {
     func itemDetailViewControllerDismissed(controller: ItemDetailViewController)
-    func itemDetailViewController(controller: ItemDetailViewController, shouldUpdateItem item:Item, withNewItem newItem: Item?) -> Bool
+    func itemDetailViewController(controller: ItemDetailViewController, finishedEditingItem item: Item?, withNewItem newItem: Item) -> Bool
 }
 
 class ItemDetailViewController: UIViewController, UITextFieldDelegate {
@@ -195,7 +195,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         self.container = UIView(x: 0, y: 13, width: 320, height: height * 4)
         self.view.addSubview(self.container)
         
-        self.titleField = UITextField(frame: CGRectMake(0, 0, 320, 40))
+        self.titleField = UITextField(frame: CGRectMake(xOffset, 0, width, 40))
         if self.item {
             self.titleField.text = self.item!.title
         }
@@ -351,8 +351,8 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     func save() {
         if delegate {
             if !titleField!.text.isEmpty {
-                var item = Item(title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
-                if delegate!.itemDetailViewController(self, shouldUpdateItem: self.item!, withNewItem: item) {
+                var item2 = Item(title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
+                if delegate!.itemDetailViewController(self, finishedEditingItem:self.item, withNewItem: item2) {
                     self.dismiss()
                 }
             }
