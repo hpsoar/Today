@@ -16,6 +16,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var date:NSDate?
     
+    var detailController: ItemDetailViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,6 +48,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func addItem() {
+        if !self.detailController {
+            var detailController = ItemDetailViewController(item: nil)
+            
+            detailController.delegate = self
+            
+            var view:UIView? = self.navigationItem.rightBarButtonItem.valueForKey("view") as? UIView
+            
+            if (view) {
+                detailController.showFromView(view!)
+            }
+            
+            self.detailController = detailController
+        }
     }
     
     func showMenu() {
@@ -87,8 +102,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     }
     
-    
-    var detailController: ItemDetailViewController?
     func showDetailForCell(cell: TodayItemCell)  {
         if !self.detailController {
             var indexPath = self.tableView!.indexPathForCell(cell)

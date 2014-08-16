@@ -167,7 +167,7 @@ protocol ItemDetailViewControllerDelegate {
 }
 
 class ItemDetailViewController: UIViewController, UITextFieldDelegate {
-    var item: Item
+    var item: Item?
     
     var container: UIView!
     var titleField: UITextField!
@@ -178,7 +178,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     var buttonContainer: BorderedView!
     var delegate: ItemDetailViewControllerDelegate?
     
-    init(item: Item) {
+    init(item: Item?) {
         self.item = item
         super.init(nibName: nil, bundle: nil)
     }
@@ -196,7 +196,12 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(self.container)
         
         self.titleField = UITextField(frame: CGRectMake(0, 0, 320, 40))
-        self.titleField.text = item.title
+        if self.item {
+            self.titleField.text = self.item!.title
+        }
+        else {
+            self.titleField.placeholder = "New Item"
+        }
         self.titleField.clearButtonMode = UITextFieldViewMode.WhileEditing
         self.titleField.textAlignment = NSTextAlignment.Center
         self.titleField.returnKeyType = UIReturnKeyType.Done
@@ -204,12 +209,19 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         self.titleField.textColor = UIColor.whiteColor()
         self.container.addSubview(self.titleField)
         
-        self.allowShareSwitch = SwitchView(frame: CGRectMake(xOffset, self.titleField.bottom, width, height), title: "Allow Share", value: self.item.allowShare)
+        var allowShare = false
+        var checked = false
+        if self.item {
+            allowShare = self.item!.allowShare
+            checked = self.item!.checked
+        }
+        
+        self.allowShareSwitch = SwitchView(frame: CGRectMake(xOffset, self.titleField.bottom, width, height), title: "Allow Share", value: allowShare)
         self.allowShareSwitch!.setTextColor(UIColor.whiteColor())
         self.container.addSubview(self.allowShareSwitch)
         
         // TODO: only show this for today's item
-        self.checkedSwitch = SwitchView(frame: CGRectMake(xOffset, self.allowShareSwitch.bottom, width, height), title: "Checked", value: self.item.checked)
+        self.checkedSwitch = SwitchView(frame: CGRectMake(xOffset, self.allowShareSwitch.bottom, width, height), title: "Checked", value: checked)
         self.checkedSwitch!.setTextColor(UIColor.whiteColor())
         self.container.addSubview(self.checkedSwitch)
         
@@ -320,9 +332,11 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func animationDidStop(anim: CAAnimation!, finished flag: Bool)  {
-        for v in self.window!.subviews {
+        for v : AnyObject in self.window!.subviews {
             v.removeFromSuperview()
         }
+        self.anchorView = nil
+        
         self.window!.hidden = true
         self.window = nil
         
@@ -335,12 +349,9 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         if delegate {
             if !titleField!.text.isEmpty {
                 var item = Item(title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
-                if delegate!.itemDetailViewController(self, shouldUpdateItem: self.item, withNewItem: item) {
+                if delegate!.itemDetailViewController(self, shouldUpdateItem: self.item!, withNewItem: item) {
                     self.dismiss()
                 }
-            }
-            else {
-                self.titleField!.text = self.item.title
             }
         }
     }
