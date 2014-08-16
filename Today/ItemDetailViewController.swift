@@ -15,6 +15,74 @@ class Line: UIView {
     }
 }
 
+extension UIView {
+    var width: CGFloat {
+    get {
+        return self.frame.size.width
+    }
+    set {
+        var frame = self.frame
+        frame.size.width = newValue
+        self.frame = frame
+    }
+    }
+    
+    var height: CGFloat {
+    get {
+        return self.frame.size.height
+    }
+    set {
+        var frame = self.frame
+        frame.size.height = newValue
+        self.frame = frame
+    }
+    }
+    
+    var top: CGFloat {
+    get {
+        return self.frame.origin.y
+    }
+    set {
+        var frame = self.frame
+        frame.origin.y = newValue
+        self.frame = frame
+    }
+    }
+    
+    var left: CGFloat {
+    get {
+        return self.frame.origin.x
+    }
+    set {
+        var frame = self.frame
+        frame.origin.x = newValue
+        self.frame = frame
+    }
+    }
+    
+    var bottom: CGFloat {
+    get {
+        return self.frame.origin.y + self.frame.size.height
+    }
+    set {
+        var frame = self.frame
+        frame.origin.y = newValue - frame.size.height
+        self.frame = frame
+    }
+    }
+    
+    var right: CGFloat {
+    get {
+        return self.frame.origin.x + self.frame.size.width
+    }
+    set {
+        var frame = self.frame
+        frame.origin.x = newValue - frame.size.width
+        self.frame = frame
+    }
+    }
+}
+
 class BorderedView: UIView {
     var leftBorder: UIView?
     var rightBorder: UIView?
@@ -100,6 +168,7 @@ protocol ItemDetailViewControllerDelegate {
 class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     var item: Item
     
+    var container: UIView!
     var titleField: UITextField!
     var allowShareSwitch: SwitchView!
     var checkedSwitch: SwitchView!
@@ -115,6 +184,14 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.orangeColor()
+        
+        var width: CGFloat = 240
+        var xOffset: CGFloat = (320 - width) / 2
+        var height: CGFloat = 50
+        
+        self.container = UIView(x: 0, y: 13, width: 320, height: height * 4)
+        self.view.addSubview(self.container)
         
         self.titleField = UITextField(frame: CGRectMake(0, 0, 320, 40))
         self.titleField.text = item.title
@@ -123,35 +200,20 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         self.titleField.returnKeyType = UIReturnKeyType.Done
         self.titleField.delegate = self
         self.titleField.textColor = UIColor.whiteColor()
-        self.view.addSubview(self.titleField)
-        
-        var width: CGFloat = 240
-        var xOffset: CGFloat = (320 - width) / 2
-        var height: CGFloat = 50
-        self.titleField!.frame = CGRectMake(xOffset, 0, width, height)
-        
-        var top: CGFloat = self.titleField!.frame.origin.y + self.titleField!.frame.size.height
-        
-        
-        top = 0
-        self.allowShareSwitch!.frame = CGRectMake(0, top, width, height)
-        top += height
-        self.checkedSwitch!.frame = CGRectMake(0, top, width, height)
-        top += height
-        self.buttonContainer!.frame = CGRectMake(0, top, width, height)
+        self.container.addSubview(self.titleField)
         
         self.allowShareSwitch = SwitchView(frame: CGRectMake(xOffset, self.titleField.bottom, width, height), title: "Allow Share", value: self.item.allowShare)
         self.allowShareSwitch!.setTextColor(UIColor.whiteColor())
-        self.view.addSubview(self.allowShareSwitch)
+        self.container.addSubview(self.allowShareSwitch)
         
         // TODO: only show this for today's item
         self.checkedSwitch = SwitchView(frame: CGRectMake(xOffset, self.allowShareSwitch.bottom, width, height), title: "Checked", value: self.item.checked)
         self.checkedSwitch!.setTextColor(UIColor.whiteColor())
-        self.view.addSubview(self.checkedSwitch)
+        self.container.addSubview(self.checkedSwitch)
         
-        self.buttonContainer = BorderedView(frame: CGRectZero)
-        self.view.addSubview(self.buttonContainer)
-        self.buttonContainer!.border(2).backgroundColor = UIColor.whiteColor()
+        self.buttonContainer = BorderedView(frame: CGRectMake(xOffset, self.checkedSwitch.bottom, width, height))
+        self.buttonContainer.border(2).backgroundColor = UIColor.whiteColor()
+        self.container.addSubview(self.buttonContainer)
         
         self.saveBtn = UIButton(frame: CGRectZero)
         self.saveBtn!.backgroundColor = UIColor.greenColor()
@@ -173,8 +235,6 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         
         self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-30-[saveBtn(70)]-[cancelBtn(70)]-30-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views))
        self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[superview]-(<=1)-[saveBtn(60)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views))
-        
-        self.view.backgroundColor = UIColor.orangeColor()
     }
     
     var window:UIWindow?
@@ -187,14 +247,20 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
             window!.hidden = false
             var frame = window!.convertRect(view.frame, fromView: view.superview)
             self.view.top = frame.origin.y
-            self.titleField!.frame = self.view.bounds
             window!.addSubview(self.view)
             
-            UIView.animateWithDuration(0.5, animations: {
-                    self.view.top = 0
-                    self.titleField!.frame = CGRectMake(0, 0, 320, 44)
+            UIView.animateWithDuration(0.3, animations: {
+                    self.view.top = 64
                 }, completion: {
                     (finished: Bool) in
+                    
+                    UIView.animateWithDuration(0.3, animations: {
+                        self.view.top = 0
+                        self.container.top = 64
+                        }, completion: {
+                            (finished: Bool) in
+                            
+                        })
                 })
         }
     }
