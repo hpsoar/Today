@@ -107,7 +107,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func itemDetailViewControllerDismissed(controller: ItemDetailViewController) {
-        controller.dismiss()
         detailController = nil
     }
     
