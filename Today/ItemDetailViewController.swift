@@ -270,10 +270,10 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
             window!.hidden = false
             
             var duration = 0.3
-            var pAni = CAKeyframeAnimation(keyPath: "position.y")
+            var pAni = CAKeyframeAnimation(keyPath: "position")
             pAni.duration = duration
             
-            var hAni = CAKeyframeAnimation(keyPath: "bounds.size.height")
+            var hAni = CAKeyframeAnimation(keyPath: "bounds.size")
             hAni.duration = duration
             
             var ani2 = CAKeyframeAnimation(keyPath: "position.y")
@@ -283,35 +283,38 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
             alpahAni.duration = duration
             
             var frame = window!.convertRect(view.frame, fromView: view.superview)
-            var height0 = frame.size.height
-            var position0 = frame.origin.y + 0.5 * height0
+            var size0 = frame.size
+            var position0 = CGPointMake(frame.origin.x + 0.5 * size0.width, frame.origin.y + 0.5 * size0.height)
             
-            var height2 = window!.height
-            var position2 = 0.5 * height2
+            var size2 = window!.bounds.size
+            var position2 = CGPointMake(0.5 * size2.width, 0.5 * size2.height)
             
             var positionY2:CGFloat = 13.0 + 0.5 * self.container.height
             var endY2:CGFloat = 64 + 0.5 * self.container.height
             var middleY2:CGFloat = (positionY2 + endY2) * 0.5
             
             if show {
-                pAni.values = [position0, position2]
-                hAni.values = [ height0, height2 ]
+                var arr = [ position0, position2 ]
+                pAni.values = [ NSValue(CGPoint: position0), NSValue(CGPoint: position2) ]
+                hAni.values = [ NSValue(CGSize: size0), NSValue(CGSize: size2) ]
+                
                 ani2.values = [positionY2,  endY2]
                 alpahAni.values = [ 0, 1 ]
                 
-                self.view.layer.position.y = position2
+                self.view.layer.position = position2
                 self.view.layer.bounds = window!.bounds
                 self.container.layer.position.y = endY2
                 self.container.layer.opacity = 1
             }
             else {
-                pAni.values = [position2, position0]
-                hAni.values = [ height2, height0]
+                pAni.values = [ NSValue(CGPoint: position2), NSValue(CGPoint: position0) ]
+                hAni.values = [ NSValue(CGSize: size2), NSValue(CGSize: size0) ]
+                
                 ani2.values = [endY2, positionY2]
                 alpahAni.values = [ 1, 0 ]
                 pAni.delegate = self
                 
-                self.view.layer.position.y = position0
+                self.view.layer.position = position0
                 self.view.frame = frame
                 self.container.layer.position.y = positionY2
                 self.container.layer.opacity = 0
