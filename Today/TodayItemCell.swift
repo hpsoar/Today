@@ -15,8 +15,7 @@ protocol TodayItemCellDelegate {
 
 class TodayItemCell: UITableViewCell {
 
-    var titleLabel: UILabel
-    var container: UIView
+    var titleLabel: UILabel!
     var delegate: TodayItemCellDelegate?
     var margin: CGFloat = 5
     var cellColor: UIColor = UIColor.redColor()
@@ -31,21 +30,33 @@ class TodayItemCell: UITableViewCell {
     }
     
     init(style: UITableViewCellStyle, reuseIdentifier: String) {
-        container = UIView(frame: CGRectMake(5, 2, 310, 62))
-        container.layer.cornerRadius = 5;
-        
-        titleLabel = UILabel(frame: container.bounds)
-        titleLabel.textAlignment = NSTextAlignment.Center
-        titleLabel.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
-        container.addSubview(titleLabel)
-        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.contentView.addSubview(container)
+        var redView = UIView(frame: CGRectMake(5, 5, 310, 52))
+        redView.layer.cornerRadius = 5;
+        redView.backgroundColor = UIColor.redColor()
+        self.backgroundView = redView;
         
-        var longPress = UILongPressGestureRecognizer(target: self, action: "showDetail")
+        var greenView = UIView(frame: redView.bounds);
+        greenView.layer.cornerRadius = redView.layer.cornerRadius
+        greenView.backgroundColor = UIColor.greenColor()
+        self.selectedBackgroundView = greenView
+        
+        titleLabel = UILabel(frame: CGRectMake(0, 0, 320, 66))
+        titleLabel.textAlignment = NSTextAlignment.Center
+        titleLabel.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+        
+        self.contentView.addSubview(titleLabel)
+        
         self.userInteractionEnabled = true
-        self.addGestureRecognizer(longPress)
+        
+        var swipe = UISwipeGestureRecognizer(target: self, action: "showDetail")
+        swipe.direction = UISwipeGestureRecognizerDirection.Left
+        self.addGestureRecognizer(swipe)
+        
+        var swipeRight = UISwipeGestureRecognizer(target: self, action: "delete")
+        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
+        self.addGestureRecognizer(swipeRight)
     }
 
     override func awakeFromNib() {
@@ -56,18 +67,18 @@ class TodayItemCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        container.frame = CGRectInset(self.contentView.bounds, 5, 5);
+        self.backgroundView.frame = CGRectInset(self.bounds, 5, 5)
+        self.selectedBackgroundView.frame = self.backgroundView.frame;
+        titleLabel.frame = self.bounds
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         if (selected) {
-            container.backgroundColor = cellColorSelected
             self.accessoryType = UITableViewCellAccessoryType.Checkmark
         }
         else {
-            container.backgroundColor = cellColor
             self.accessoryType = UITableViewCellAccessoryType.None
         }
     }
@@ -78,6 +89,10 @@ class TodayItemCell: UITableViewCell {
     
     func showDetail() {
         delegate?.showDetailForCell(self)
+    }
+    
+    func delete() {
+        
     }
     
     class func heightForTitle(title:NSString, withWidth width: CGFloat) -> CGFloat {

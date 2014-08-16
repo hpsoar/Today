@@ -225,6 +225,14 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    func dismiss() {
+        for v in self.window!.subviews {
+            v.removeFromSuperview()
+        }
+        self.window!.hidden = true
+        self.window = nil
+    }
+    
     func save() {
         if delegate {
             if !titleField!.text.isEmpty {
@@ -241,7 +249,6 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     }
     
     func cancel() {
-        self.window!.hidden = true
         if delegate {
             delegate!.itemDetailViewControllerDismissed(self)
         }

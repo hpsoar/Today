@@ -246,4 +246,13 @@ class DB: NSObject {
         
         return tmp
     }
+    
+    class func mockItems() -> Item[] {
+        var titles = ["hello", "world", "hi", "ha" ]
+        var items = Item[]()
+        for title in titles {
+            items.append(Item(title: title))
+        }
+        return items
+    }
 }

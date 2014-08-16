@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12EA3AAF199E6D040057CF9D /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA3AAE199E6D040057CF9D /* Icon.swift */; };
+		12EA3AB1199E6ED10057CF9D /* ViewUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA3AB0199E6ED10057CF9D /* ViewUtility.swift */; };
 		B027144C198E79D100F39ACC /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B027144B198E79D100F39ACC /* ItemDetailViewController.swift */; };
 		B08D82DD198CDFC200012B98 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08D82DC198CDFC200012B98 /* AppDelegate.swift */; };
 		B08D82DF198CDFC200012B98 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08D82DE198CDFC200012B98 /* ViewController.swift */; };
 		B08D82E4198CDFC200012B98 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B08D82E3198CDFC200012B98 /* Images.xcassets */; };
 		B08D82F0198CDFC200012B98 /* TodayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08D82EF198CDFC200012B98 /* TodayTests.swift */; };
 		B0A33CCE198CEB5C00A21B8D /* TodayItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CCD198CEB5C00A21B8D /* TodayItemCell.swift */; };
-		B0A33CD0198CFB9F00A21B8D /* ItemSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CCF198CFB9F00A21B8D /* ItemSelectionViewController.swift */; };
 		B0A33CD5198DE16600A21B8D /* ItemListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CD4198DE16600A21B8D /* ItemListViewController.swift */; };
 		B0A33CD7198DE72C00A21B8D /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CD6198DE72B00A21B8D /* DB.swift */; };
 		B0A82EC6199CEC840012FACB /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A82EC5199CEC840012FACB /* Utility.swift */; };
@@ -30,6 +31,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		12EA3AAE199E6D040057CF9D /* Icon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
+		12EA3AB0199E6ED10057CF9D /* ViewUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewUtility.swift; sourceTree = "<group>"; };
 		B027144B198E79D100F39ACC /* ItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		B08D82D7198CDFC200012B98 /* Today.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Today.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B08D82DB198CDFC200012B98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -40,7 +43,6 @@
 		B08D82EE198CDFC200012B98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B08D82EF198CDFC200012B98 /* TodayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayTests.swift; sourceTree = "<group>"; };
 		B0A33CCD198CEB5C00A21B8D /* TodayItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodayItemCell.swift; sourceTree = "<group>"; };
-		B0A33CCF198CFB9F00A21B8D /* ItemSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemSelectionViewController.swift; sourceTree = "<group>"; };
 		B0A33CD1198D25E700A21B8D /* Today.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Today.entitlements; sourceTree = "<group>"; };
 		B0A33CD4198DE16600A21B8D /* ItemListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemListViewController.swift; sourceTree = "<group>"; };
 		B0A33CD6198DE72B00A21B8D /* DB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
@@ -93,10 +95,11 @@
 				B08D82E3198CDFC200012B98 /* Images.xcassets */,
 				B08D82DA198CDFC200012B98 /* Supporting Files */,
 				B0A33CCD198CEB5C00A21B8D /* TodayItemCell.swift */,
-				B0A33CCF198CFB9F00A21B8D /* ItemSelectionViewController.swift */,
 				B0A33CD4198DE16600A21B8D /* ItemListViewController.swift */,
 				B0A33CD6198DE72B00A21B8D /* DB.swift */,
 				B027144B198E79D100F39ACC /* ItemDetailViewController.swift */,
+				12EA3AAE199E6D040057CF9D /* Icon.swift */,
+				12EA3AB0199E6ED10057CF9D /* ViewUtility.swift */,
 			);
 			path = Today;
 			sourceTree = "<group>";
@@ -230,13 +233,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12EA3AB1199E6ED10057CF9D /* ViewUtility.swift in Sources */,
 				B0A33CCE198CEB5C00A21B8D /* TodayItemCell.swift in Sources */,
 				B027144C198E79D100F39ACC /* ItemDetailViewController.swift in Sources */,
 				B0A33CD5198DE16600A21B8D /* ItemListViewController.swift in Sources */,
-				B0A33CD0198CFB9F00A21B8D /* ItemSelectionViewController.swift in Sources */,
 				B0A82EC6199CEC840012FACB /* Utility.swift in Sources */,
 				B08D82DF198CDFC200012B98 /* ViewController.swift in Sources */,
 				B08D82DD198CDFC200012B98 /* AppDelegate.swift in Sources */,
+				12EA3AAF199E6D040057CF9D /* Icon.swift in Sources */,
 				B0A33CD7198DE72C00A21B8D /* DB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -342,6 +346,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Today/Today.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -350,6 +355,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -358,6 +364,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Today/Today.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

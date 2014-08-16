@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ItemSelectionViewControllerDelegate, TodayItemCellDelegate, ItemDetailViewControllerDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, TodayItemCellDelegate, ItemDetailViewControllerDelegate {
     
     var tableView:UITableView?
     
@@ -19,9 +19,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Besides Work"
+        self.title = "Today"
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "addItem")
+        var menuIcon = MenuIcon(frame: CGRectMake(0, 0, 32, 32))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: menuIcon.snapshot(), style: UIBarButtonItemStyle.Plain, target: self, action: "showMenu")
         
         self.loadModel()
         
@@ -38,14 +40,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func loadModel() {
         self.date = NSDate()
-        self.items = DB.instance.itemsOfDay(self.date!)
+//        self.items = DB.instance.itemsOfDay(self.date!)
+        
+        self.items = DB.mockItems()
     }
     
     func addItem() {
-        var controller = ItemSelectionViewController()
-        controller.delegate = self
+    }
+    
+    func showMenu() {
         
-        self.presentModalViewController(UINavigationController(rootViewController: controller), animated: true)
     }
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
@@ -62,6 +66,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         cell!.delegate = self
         cell!.margin = 5
         cell!.updateWithItem(self.items!.objectAtIndex(indexPath.row) as Item)
+        cell!.selected = false
         
         return cell;
     }
@@ -72,41 +77,37 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         var height = TodayItemCell.heightForTitle(item.title, withWidth: self.view.frame.size.width) + 10
         return height < 66 ? 66 : height
     }
-
-    func itemSelectionViewController(controller: ItemSelectionViewController, didSelectItems items: NSArray?)  {
-        controller.dismissModalViewControllerAnimated(true)
-        
-        if items {
-            self.items = items
-            self.tableView!.reloadData()
-            dispatch_async(dispatch_get_global_queue(0, 0), {
-                DB.instance.saveItems(self.items, ofDay: NSDate())
-            })
-        }
-    }
+    
+//    func tableView(tableView: UITableView!, willSelectRowAtIndexPath indexPath: NSIndexPath!) -> NSIndexPath! {
+//        self.showDetailForCell(tableView.cellForRowAtIndexPath(indexPath) as TodayItemCell)
+//        return nil
+//    }
     
     func deleteSelectedForCell(cell: TodayItemCell) {
         
     }
     
-    var detailController: ItemDetailViewController?
     
+    var detailController: ItemDetailViewController?
     func showDetailForCell(cell: TodayItemCell)  {
-        if !detailController {
+        if !self.detailController {
             var indexPath = self.tableView!.indexPathForCell(cell)
             var item = self.items!.objectAtIndex(indexPath.row) as Item
             
-            detailController = ItemDetailViewController(item: item)
+            var detailController = ItemDetailViewController(item: item)
             
-            detailController!.delegate = self
+            detailController.delegate = self
             
-            detailController!.showFromView(cell)
+            detailController.showFromView(cell)
+            
+            self.detailController = detailController
             
             NSLog("%@", item)
         }
     }
     
     func itemDetailViewControllerDismissed(controller: ItemDetailViewController) {
+        controller.dismiss()
         detailController = nil
     }
     
