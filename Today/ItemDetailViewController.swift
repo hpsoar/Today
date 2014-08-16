@@ -15,22 +15,6 @@ class Line: UIView {
     }
 }
 
-extension UIView {
-    convenience init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) {
-        self.init(frame: CGRectMake(x, y, width, height))
-    }
-    
-    var width: CGFloat {
-        return CGRectGetWidth(self.frame)
-    }
-    
-    var height: CGFloat {
-        return CGRectGetHeight(self.frame)
-    }
-}
-
-typealias UIViewPointer = AutoreleasingUnsafePointer<UIView?>
-
 class BorderedView: UIView {
     var leftBorder: UIView?
     var rightBorder: UIView?
@@ -116,13 +100,12 @@ protocol ItemDetailViewControllerDelegate {
 class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     var item: Item
     
-    var titleField: UITextField?
-    var allowShareSwitch: SwitchView?
-    var checkedSwitch: SwitchView?
-    var saveBtn: UIButton?
-    var cancelBtn: UIButton?
-    var buttonContainer: BorderedView?
-    var container: UIView?
+    var titleField: UITextField!
+    var allowShareSwitch: SwitchView!
+    var checkedSwitch: SwitchView!
+    var saveBtn: UIButton!
+    var cancelBtn: UIButton!
+    var buttonContainer: BorderedView!
     var delegate: ItemDetailViewControllerDelegate?
     
     init(item: Item) {
@@ -134,28 +117,40 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         
         self.titleField = UITextField(frame: CGRectMake(0, 0, 320, 40))
-        self.titleField!.text = item.title
-        self.titleField!.clearButtonMode = UITextFieldViewMode.WhileEditing
-        self.titleField!.textAlignment = NSTextAlignment.Center
-        self.titleField!.returnKeyType = UIReturnKeyType.Done
-        self.titleField!.delegate = self
-        self.titleField!.textColor = UIColor.whiteColor()
+        self.titleField.text = item.title
+        self.titleField.clearButtonMode = UITextFieldViewMode.WhileEditing
+        self.titleField.textAlignment = NSTextAlignment.Center
+        self.titleField.returnKeyType = UIReturnKeyType.Done
+        self.titleField.delegate = self
+        self.titleField.textColor = UIColor.whiteColor()
         self.view.addSubview(self.titleField)
         
-        self.container = UIView(frame: CGRectZero)
-        self.view.addSubview(self.container)
+        var width: CGFloat = 240
+        var xOffset: CGFloat = (320 - width) / 2
+        var height: CGFloat = 50
+        self.titleField!.frame = CGRectMake(xOffset, 0, width, height)
         
-        self.allowShareSwitch = SwitchView(frame: CGRectZero, title: "Allow Share", value: self.item.allowShare)
+        var top: CGFloat = self.titleField!.frame.origin.y + self.titleField!.frame.size.height
+        
+        
+        top = 0
+        self.allowShareSwitch!.frame = CGRectMake(0, top, width, height)
+        top += height
+        self.checkedSwitch!.frame = CGRectMake(0, top, width, height)
+        top += height
+        self.buttonContainer!.frame = CGRectMake(0, top, width, height)
+        
+        self.allowShareSwitch = SwitchView(frame: CGRectMake(xOffset, self.titleField.bottom, width, height), title: "Allow Share", value: self.item.allowShare)
         self.allowShareSwitch!.setTextColor(UIColor.whiteColor())
-        self.container!.addSubview(self.allowShareSwitch)
+        self.view.addSubview(self.allowShareSwitch)
         
         // TODO: only show this for today's item
-        self.checkedSwitch = SwitchView(frame: CGRectZero, title: "Checked", value: self.item.checked)
+        self.checkedSwitch = SwitchView(frame: CGRectMake(xOffset, self.allowShareSwitch.bottom, width, height), title: "Checked", value: self.item.checked)
         self.checkedSwitch!.setTextColor(UIColor.whiteColor())
-        self.container!.addSubview(self.checkedSwitch)
+        self.view.addSubview(self.checkedSwitch)
         
         self.buttonContainer = BorderedView(frame: CGRectZero)
-        self.container!.addSubview(self.buttonContainer)
+        self.view.addSubview(self.buttonContainer)
         self.buttonContainer!.border(2).backgroundColor = UIColor.whiteColor()
         
         self.saveBtn = UIButton(frame: CGRectZero)
@@ -191,36 +186,15 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         if window {
             window!.hidden = false
             var frame = window!.convertRect(view.frame, fromView: view.superview)
-            self.view.frame = frame
+            self.view.top = frame.origin.y
             self.titleField!.frame = self.view.bounds
             window!.addSubview(self.view)
             
-            self.container!.alpha = 0
             UIView.animateWithDuration(0.5, animations: {
-                    self.view.frame = CGRectOffset(self.window!.bounds, 0, 20)
+                    self.view.top = 0
                     self.titleField!.frame = CGRectMake(0, 0, 320, 44)
                 }, completion: {
                     (finished: Bool) in
-                    var width: CGFloat = 240
-                    var xOffset: CGFloat = (320 - width) / 2
-                    var height: CGFloat = 50
-                    self.titleField!.frame = CGRectMake(xOffset, 0, width, height)
-                    
-                    var top: CGFloat = self.titleField!.frame.origin.y + self.titleField!.frame.size.height
-                    
-                    self.container!.frame = CGRectMake(xOffset, top, width, height * 3)
-                    
-                    top = 0
-                    self.allowShareSwitch!.frame = CGRectMake(0, top, width, height)
-                    top += height
-                    self.checkedSwitch!.frame = CGRectMake(0, top, width, height)
-                    top += height
-                    self.buttonContainer!.frame = CGRectMake(0, top, width, height)
-                    
-                    UIView.animateWithDuration(0.5, animations: {
-                        self.container!.alpha = 1
-                        self.titleField!.becomeFirstResponder()
-                        })
                 })
         }
     }
