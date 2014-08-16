@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 class Line: UIView {
     init(length: CGFloat, width: CGFloat, color: UIColor) {
@@ -185,6 +186,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.orangeColor()
+        self.view.clipsToBounds = true
         
         var width: CGFloat = 240
         var xOffset: CGFloat = (320 - width) / 2
@@ -246,22 +248,36 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         if window {
             window!.hidden = false
             var frame = window!.convertRect(view.frame, fromView: view.superview)
-            self.view.top = frame.origin.y
+            self.view.frame = frame
             window!.addSubview(self.view)
             
-            UIView.animateWithDuration(0.3, animations: {
-                    self.view.top = 64
-                }, completion: {
-                    (finished: Bool) in
-                    
-                    UIView.animateWithDuration(0.3, animations: {
-                        self.view.top = 0
-                        self.container.top = 64
-                        }, completion: {
-                            (finished: Bool) in
-                            
-                        })
-                })
+            var duration = 0.3
+            var height0 = frame.size.height
+            var position0 = frame.origin.y + 0.5 * height0
+            
+            var height2 = window!.height
+            var position2 = 0.5 * height2
+            
+            var pAni = CAKeyframeAnimation(keyPath: "position.y")
+            pAni.values = [position0, position2]
+            pAni.duration = duration
+            self.view.layer.addAnimation(pAni, forKey: nil)
+            self.view.layer.position.y = position2
+            
+            var hAni = CAKeyframeAnimation(keyPath: "bounds.size.height")
+            hAni.values = [ height0, height2 ]
+            hAni.duration = duration
+            self.view.layer.addAnimation(hAni, forKey: nil)
+            self.view.layer.bounds = window!.bounds
+            
+            var positionY2:CGFloat = 13.0 + 0.5 * self.container.height
+            var endY2:CGFloat = 64 + 0.5 * self.container.height
+            var middleY2:CGFloat = (positionY2 + endY2) * 0.5
+            var ani2 = CAKeyframeAnimation(keyPath: "position.y")
+            ani2.values = [positionY2, middleY2, endY2]
+            ani2.duration = duration
+            self.container.layer.addAnimation(ani2, forKey: nil)
+            self.container.layer.position.y = endY2
         }
     }
     
