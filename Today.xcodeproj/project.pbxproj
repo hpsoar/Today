@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12AB956A199FAD7F001BF856 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 12AB9564199FAD7F001BF856 /* LICENSE */; };
+		12AB956B199FAD7F001BF856 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 12AB9565199FAD7F001BF856 /* README.md */; };
+		12AB956C199FAD7F001BF856 /* UIImage+BlurredFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AB9567199FAD7F001BF856 /* UIImage+BlurredFrame.m */; };
+		12AB956D199FAD7F001BF856 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AB9569199FAD7F001BF856 /* UIImage+ImageEffects.m */; };
+		12AB9574199FC390001BF856 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 12AB9571199FC390001BF856 /* SVProgressHUD.bundle */; };
+		12AB9575199FC390001BF856 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AB9573199FC390001BF856 /* SVProgressHUD.m */; };
 		12EA3AAF199E6D040057CF9D /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA3AAE199E6D040057CF9D /* Icon.swift */; };
 		12EA3AB1199E6ED10057CF9D /* ViewUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA3AB0199E6ED10057CF9D /* ViewUtility.swift */; };
 		B027144C198E79D100F39ACC /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B027144B198E79D100F39ACC /* ItemDetailViewController.swift */; };
@@ -18,6 +24,7 @@
 		B0A33CD5198DE16600A21B8D /* ItemListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CD4198DE16600A21B8D /* ItemListViewController.swift */; };
 		B0A33CD7198DE72C00A21B8D /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A33CD6198DE72B00A21B8D /* DB.swift */; };
 		B0A82EC6199CEC840012FACB /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A82EC5199CEC840012FACB /* Utility.swift */; };
+		CF29B34BB9ED4F6B9E365BE3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 667FC76444CB4B4AAAEEE3D9 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,8 +38,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		09E27B25926842B5B902D92F /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		12AB9564199FAD7F001BF856 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		12AB9565199FAD7F001BF856 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		12AB9566199FAD7F001BF856 /* UIImage+BlurredFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+BlurredFrame.h"; sourceTree = "<group>"; };
+		12AB9567199FAD7F001BF856 /* UIImage+BlurredFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+BlurredFrame.m"; sourceTree = "<group>"; };
+		12AB9568199FAD7F001BF856 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		12AB9569199FAD7F001BF856 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		12AB9571199FC390001BF856 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		12AB9572199FC390001BF856 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		12AB9573199FC390001BF856 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		12AB9577199FC78F001BF856 /* Today-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Today-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		12EA3AAE199E6D040057CF9D /* Icon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
 		12EA3AB0199E6ED10057CF9D /* ViewUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewUtility.swift; sourceTree = "<group>"; };
+		667FC76444CB4B4AAAEEE3D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B027144B198E79D100F39ACC /* ItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		B08D82D7198CDFC200012B98 /* Today.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Today.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B08D82DB198CDFC200012B98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -54,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF29B34BB9ED4F6B9E365BE3 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +87,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		12AB9563199FAD7F001BF856 /* UIImage+BlurredFrame */ = {
+			isa = PBXGroup;
+			children = (
+				12AB9564199FAD7F001BF856 /* LICENSE */,
+				12AB9565199FAD7F001BF856 /* README.md */,
+				12AB9566199FAD7F001BF856 /* UIImage+BlurredFrame.h */,
+				12AB9567199FAD7F001BF856 /* UIImage+BlurredFrame.m */,
+				12AB9568199FAD7F001BF856 /* UIImage+ImageEffects.h */,
+				12AB9569199FAD7F001BF856 /* UIImage+ImageEffects.m */,
+			);
+			path = "UIImage+BlurredFrame";
+			sourceTree = "<group>";
+		};
+		12AB9570199FC390001BF856 /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				12AB9571199FC390001BF856 /* SVProgressHUD.bundle */,
+				12AB9572199FC390001BF856 /* SVProgressHUD.h */,
+				12AB9573199FC390001BF856 /* SVProgressHUD.m */,
+			);
+			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
+		A70115CB9D364BEAA6CE0EBB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				667FC76444CB4B4AAAEEE3D9 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B08D82CE198CDFC100012B98 = {
 			isa = PBXGroup;
 			children = (
@@ -74,6 +125,8 @@
 				B08D82D9198CDFC200012B98 /* Today */,
 				B08D82EC198CDFC200012B98 /* TodayTests */,
 				B08D82D8198CDFC200012B98 /* Products */,
+				09E27B25926842B5B902D92F /* Pods.xcconfig */,
+				A70115CB9D364BEAA6CE0EBB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -89,6 +142,9 @@
 		B08D82D9198CDFC200012B98 /* Today */ = {
 			isa = PBXGroup;
 			children = (
+				12AB9577199FC78F001BF856 /* Today-Bridging-Header.h */,
+				12AB9570199FC390001BF856 /* SVProgressHUD */,
+				12AB9563199FAD7F001BF856 /* UIImage+BlurredFrame */,
 				B0A33CD1198D25E700A21B8D /* Today.entitlements */,
 				B08D82DC198CDFC200012B98 /* AppDelegate.swift */,
 				B08D82DE198CDFC200012B98 /* ViewController.swift */,
@@ -136,9 +192,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B08D82F3198CDFC200012B98 /* Build configuration list for PBXNativeTarget "Today" */;
 			buildPhases = (
+				E638E6A261744DD1AD2CE5FA /* Check Pods Manifest.lock */,
 				B08D82D3198CDFC100012B98 /* Sources */,
 				B08D82D4198CDFC100012B98 /* Frameworks */,
 				B08D82D5198CDFC100012B98 /* Resources */,
+				CC824B4360904DE581E77BFA /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -215,6 +273,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12AB956A199FAD7F001BF856 /* LICENSE in Resources */,
+				12AB9574199FC390001BF856 /* SVProgressHUD.bundle in Resources */,
 				B08D82E4198CDFC200012B98 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,17 +288,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		CC824B4360904DE581E77BFA /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E638E6A261744DD1AD2CE5FA /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B08D82D3198CDFC100012B98 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12AB956C199FAD7F001BF856 /* UIImage+BlurredFrame.m in Sources */,
 				12EA3AB1199E6ED10057CF9D /* ViewUtility.swift in Sources */,
 				B0A33CCE198CEB5C00A21B8D /* TodayItemCell.swift in Sources */,
+				12AB956B199FAD7F001BF856 /* README.md in Sources */,
 				B027144C198E79D100F39ACC /* ItemDetailViewController.swift in Sources */,
 				B0A33CD5198DE16600A21B8D /* ItemListViewController.swift in Sources */,
 				B0A82EC6199CEC840012FACB /* Utility.swift in Sources */,
 				B08D82DF198CDFC200012B98 /* ViewController.swift in Sources */,
+				12AB956D199FAD7F001BF856 /* UIImage+ImageEffects.m in Sources */,
+				12AB9575199FC390001BF856 /* SVProgressHUD.m in Sources */,
 				B08D82DD198CDFC200012B98 /* AppDelegate.swift in Sources */,
 				12EA3AAF199E6D040057CF9D /* Icon.swift in Sources */,
 				B0A33CD7198DE72C00A21B8D /* DB.swift in Sources */,
@@ -343,6 +440,7 @@
 		};
 		B08D82F4198CDFC200012B98 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09E27B25926842B5B902D92F /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -355,12 +453,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Today-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		B08D82F5198CDFC200012B98 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09E27B25926842B5B902D92F /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

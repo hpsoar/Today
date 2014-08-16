@@ -30,12 +30,6 @@ class MenuIcon : UIView {
         
         CGContextDrawPath(context, kCGPathStroke)
     }
-    
-    func drawLine(x1: CGFloat, y1: CGFloat, x2: CGFloat, y2: CGFloat) {
-        var context = UIGraphicsGetCurrentContext();
-        CGContextMoveToPoint(context, x1, y1)
-        CGContextAddLineToPoint(context, x2, y2)
-    }
 }
 
 class RoundMarkIcon : UIView {
@@ -62,5 +56,32 @@ class RoundMarkIcon : UIView {
         self.layer.borderWidth = 4
         self.layer.cornerRadius = frame.size.width / 2
         self.clipsToBounds = true
+    }
+}
+
+class CloseIcon : UIView {
+    var color: UIColor
+    init(frame: CGRect, color: UIColor) {
+        self.color = color
+        super.init(frame: frame)
+        self.backgroundColor = UIColor.clearColor()
+    }
+    
+    override func drawRect(rect: CGRect) {
+        var context = UIGraphicsGetCurrentContext();
+        
+        CGContextSetStrokeColorWithColor(context, self.color.CGColor)
+        CGContextSetLineWidth(context, 1.0)
+        
+        var frame = self.frame
+        var factor: CGFloat = 0.25
+        var x1 = frame.size.width * factor
+        var x2 = frame.size.width * (1 - factor)
+        var y1 = frame.size.height * factor
+        var y2 = frame.size.height * (1 - factor)
+        self.drawLine(x1, y1: y1, x2: x2, y2: y2)
+        self.drawLine(x1, y1: y2, x2: x2, y2: y1)
+        
+        CGContextDrawPath(context, kCGPathStroke)
     }
 }

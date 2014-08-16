@@ -175,8 +175,10 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     var checkedSwitch: SwitchView!
     var saveBtn: UIButton!
     var cancelBtn: UIButton!
+    var closeBtn: UIButton!
     var buttonContainer: BorderedView!
     var delegate: ItemDetailViewControllerDelegate?
+    var topBar: UIView!
     
     init(item: Item?) {
         self.item = item
@@ -186,11 +188,27 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.orangeColor()
-        self.view.clipsToBounds = true
+        self.view.clipsToBounds = true        
         
-        var width: CGFloat = 240
+        self.topBar = UIView(x: 0, y: 20, width: self.view.width, height: 44)
+        self.view.addSubview(self.topBar)
+        
+        var closeIcon = CloseIcon(frame: CGRectMake(13, 26, 32, 32), color: UIColor.whiteColor())
+        var closeBtn = UIButton(frame: CGRectMake(7, 0, 44, 44))
+        closeBtn.setImage(closeIcon.snapshot(), forState: UIControlState.Normal)
+        closeBtn.addTarget(self, action: "cancel", forControlEvents: UIControlEvents.TouchUpInside)
+        self.closeBtn = closeBtn
+        self.topBar.addSubview(closeBtn)
+        
+        self.saveBtn = UIButton(frame: CGRectMake(0, 0, 44, 44))
+        self.saveBtn.right = self.view.width - 20
+        self.saveBtn.setTitle("Save", forState: UIControlState.Normal)
+        self.saveBtn.addTarget(self, action: "save", forControlEvents: UIControlEvents.TouchUpInside)
+        self.topBar.addSubview(self.saveBtn)
+        
+        var width: CGFloat = 280
         var xOffset: CGFloat = (320 - width) / 2
-        var height: CGFloat = 50
+        var height: CGFloat = 60
         
         self.container = UIView(x: 0, y: 13, width: 320, height: height * 4)
         self.view.addSubview(self.container)
@@ -228,27 +246,6 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         self.buttonContainer = BorderedView(frame: CGRectMake(xOffset, self.checkedSwitch.bottom, width, height))
         self.buttonContainer.border(2).backgroundColor = UIColor.whiteColor()
         self.container.addSubview(self.buttonContainer)
-        
-        self.saveBtn = UIButton(frame: CGRectZero)
-        self.saveBtn!.backgroundColor = UIColor.greenColor()
-        self.saveBtn!.layer.cornerRadius = 5
-        self.saveBtn!.setTitle("Save", forState: UIControlState.Normal)
-        self.saveBtn!.addTarget(self, action: "save", forControlEvents: UIControlEvents.TouchUpInside)
-        self.saveBtn!.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.buttonContainer!.addSubview(self.saveBtn)
-        
-        self.cancelBtn = UIButton(frame: CGRectZero)
-        self.cancelBtn!.backgroundColor = UIColor.lightGrayColor()
-        self.cancelBtn!.layer.cornerRadius = 5
-        self.cancelBtn!.setTitle("Cancel", forState: UIControlState.Normal)
-        self.cancelBtn!.addTarget(self, action: "cancel", forControlEvents: UIControlEvents.TouchUpInside)
-        self.cancelBtn!.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.buttonContainer!.addSubview(self.cancelBtn)
-        
-        var views = [ "saveBtn": self.saveBtn!, "superview": self.buttonContainer!, "cancelBtn": self.cancelBtn! ]
-        
-        self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-30-[saveBtn(70)]-[cancelBtn(70)]-30-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views))
-       self.buttonContainer!.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[superview]-(<=1)-[saveBtn(60)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views))
     }
     
     var window: UIWindow?
@@ -265,9 +262,13 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    var showed = false
+    
     func show(show: Bool, fromView view: UIView) {
         if window {
             window!.hidden = false
+            
+            self.titleField.resignFirstResponder()
             
             var duration = 0.3
             var pAni = CAKeyframeAnimation(keyPath: "position")
@@ -305,6 +306,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
                 self.view.layer.bounds = window!.bounds
                 self.container.layer.position.y = endY2
                 self.container.layer.opacity = 1
+                self.topBar.layer.opacity = 1
             }
             else {
                 pAni.values = [ NSValue(CGPoint: position2), NSValue(CGPoint: position0) ]
@@ -312,19 +314,22 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
                 
                 ani2.values = [endY2, positionY2]
                 alpahAni.values = [ 1, 0 ]
-                pAni.delegate = self
                 
                 self.view.layer.position = position0
                 self.view.frame = frame
                 self.container.layer.position.y = positionY2
                 self.container.layer.opacity = 0
+                self.topBar.layer.opacity = 0
             }
+            
+            pAni.delegate = self
 
             self.view.layer.addAnimation(pAni, forKey: nil)
             self.view.layer.addAnimation(hAni, forKey: nil)
             
             self.container.layer.addAnimation(ani2, forKey: nil)
             self.container.layer.addAnimation(alpahAni, forKey: nil)
+            self.topBar.layer.addAnimation(alpahAni, forKey: nil)
         }
     }
     
@@ -335,16 +340,22 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func animationDidStop(anim: CAAnimation!, finished flag: Bool)  {
-        for v : AnyObject in self.window!.subviews {
-            v.removeFromSuperview()
+        if showed {
+            for v : AnyObject in self.window!.subviews {
+                v.removeFromSuperview()
+            }
+            self.anchorView = nil
+            
+            self.window!.hidden = true
+            self.window = nil
+            
+            if delegate {
+                delegate!.itemDetailViewControllerDismissed(self)
+            }
         }
-        self.anchorView = nil
-        
-        self.window!.hidden = true
-        self.window = nil
-        
-        if delegate {
-            delegate!.itemDetailViewControllerDismissed(self)
+        else {
+            showed = true
+            self.titleField.becomeFirstResponder()
         }
     }
     
@@ -354,6 +365,9 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
                 var item2 = Item(title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
                 if delegate!.itemDetailViewController(self, finishedEditingItem:self.item, withNewItem: item2) {
                     self.dismiss()
+                }
+                else {
+                    SVProgressHUD.showErrorWithStatus("item named \(item2.title) already exists!")
                 }
             }
         }

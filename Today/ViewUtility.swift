@@ -15,12 +15,18 @@ extension UIView  {
     
     func snapshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.frame.size, false, 0)
-        self.layer.drawInContext(UIGraphicsGetCurrentContext())
+        self.layer.renderInContext(UIGraphicsGetCurrentContext())
         
         var image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         return image;
+    }
+    
+    func drawLine(x1: CGFloat, y1: CGFloat, x2: CGFloat, y2: CGFloat) {
+        var context = UIGraphicsGetCurrentContext();
+        CGContextMoveToPoint(context, x1, y1)
+        CGContextAddLineToPoint(context, x2, y2)
     }
 }
 

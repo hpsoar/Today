@@ -42,10 +42,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func loadModel() {
         self.date = NSDate()
-//        self.items = DB.instance.itemsOfDay(self.date!)
-        
-        //self.items!.extend(<#sequence: S#>) = DB.mockItems()
-        self.items = DB.mockItems()
+        self.items = DB.instance.itemsOfDay(self.date!)        
     }
     
     func addItem() {
@@ -111,7 +108,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             var detailController = ItemDetailViewController(item: item)
             
             detailController.delegate = self
-            
+                        
             detailController.showFromView(cell)
             
             self.detailController = detailController

@@ -43,6 +43,7 @@ class TodayItemCell: UITableViewCell {
         self.selectedBackgroundView = greenView
         
         titleLabel = UILabel(frame: CGRectMake(0, 0, 320, 66))
+        titleLabel.textColor = UIColor.whiteColor()
         titleLabel.textAlignment = NSTextAlignment.Center
         titleLabel.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
         

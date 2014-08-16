@@ -181,34 +181,28 @@ class DB: NSObject {
 
     
     // read
-    func allItems() -> NSArray {
+    func allItems() -> Item[] {
         return self.itemsOfFile(self.filenameForAllItems())
     }
     
-    func itemsOfDay(date: NSDate) -> NSArray {
+    func itemsOfDay(date: NSDate) -> Item[] {
         return self.itemsOfFile(self.filenameForItemsOfDate(date))
     }
     
-    func itemsOfFile(filename: NSString) -> NSArray {
+    func itemsOfFile(filename: NSString) -> Item[] {
         var filepath = self.filePath(filename)
         var error: NSError?
         var data: NSData? = NSData.dataWithContentsOfFile(filepath, options: NSDataReadingOptions.DataReadingUncached, error: &error)
         if data {
-            var items = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSArray
-            if items && items!.count > 0 {
-                var item:AnyObject = items!.objectAtIndex(0)
-                if item.isKindOfClass(Item) {
-                    return items!
-                }
-                else {
-                    return self.convertData(items!, filepath: filepath)
-                }
+            var items = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? Item[]
+            if items {
+                return items!
             }
         }
         else {
             NSLog("%@", error!)
         }
-        return NSArray()
+        return Item[]()
     }
     
     // read & save helper
