@@ -141,5 +141,22 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.tableView!.reloadData()
         return true
     }
+    
+    func itemDetailViewController(controller: ItemDetailViewController, willDeleteItem item: Item) -> Bool  {
+        assert(self.date, "date can't be nil")
+        assert(self.tableView, "tableView can't be nil")
+
+        var tmp = self.items.filter({ $0 != item })
+        var i = self.items.count
+        var j = tmp.count
+        println("\(i), \(j)")
+        println("\(tmp), \(self.items)")
+        
+        self.items = tmp
+        DB.instance.saveItems(self.items, ofDay: self.date!)
+        self.tableView!.reloadData()
+        
+        return true
+    }
 }
 

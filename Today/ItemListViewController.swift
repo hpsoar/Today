@@ -157,4 +157,8 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         return true
     }
+    
+    func itemDetailViewController(controller: ItemDetailViewController, willDeleteItem item: Item) -> Bool  {
+        return true
+    }
 }

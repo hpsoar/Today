@@ -164,9 +164,10 @@ class SwitchView: BorderedView {
 protocol ItemDetailViewControllerDelegate {
     func itemDetailViewControllerDismissed(controller: ItemDetailViewController)
     func itemDetailViewController(controller: ItemDetailViewController, finishedEditingItem item: Item?, withNewItem newItem: Item) -> Bool
+    func itemDetailViewController(controller: ItemDetailViewController, willDeleteItem item: Item) -> Bool
 }
 
-class ItemDetailViewController: UIViewController, UITextFieldDelegate {
+class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertViewDelegate {
     var item: Item?
     
     var container: UIView!
@@ -174,8 +175,9 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     var allowShareSwitch: SwitchView!
     var checkedSwitch: SwitchView!
     var saveBtn: UIButton!
-    var cancelBtn: UIButton!
     var closeBtn: UIButton!
+    var deleteBtn: UIButton!
+    
     var buttonContainer: BorderedView!
     var delegate: ItemDetailViewControllerDelegate?
     var topBar: UIView!
@@ -246,6 +248,17 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
         self.buttonContainer = BorderedView(frame: CGRectMake(xOffset, self.checkedSwitch.bottom, width, height))
         self.buttonContainer.border(2).backgroundColor = UIColor.whiteColor()
         self.container.addSubview(self.buttonContainer)
+        
+        if self.item {
+            self.deleteBtn = UIButton(frame: CGRectMake(0, 0, 80, 36))
+            self.deleteBtn.setTitle("Delete", forState: UIControlState.Normal)
+            self.deleteBtn.setTitleColor(UIColor.redColor(), forState: UIControlState.Normal)
+            self.deleteBtn.layer.cornerRadius =  3
+            self.deleteBtn.backgroundColor = UIColor.whiteColor()
+            self.deleteBtn.center = CGPointMake(self.buttonContainer.width / 2, self.buttonContainer.height / 2)
+            self.deleteBtn.addTarget(self, action: "delete", forControlEvents: UIControlEvents.TouchUpInside)
+            self.buttonContainer.addSubview(self.deleteBtn)
+        }
     }
     
     var window: UIWindow?
@@ -381,6 +394,26 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     
     func cancel() {
         self.dismiss()
+    }
+    
+    func delete() {
+        var alert = UIAlertView()
+        alert.title = "Warning"
+        alert.message = "Do you want to delete this item?"
+        alert.delegate = self
+        alert.addButtonWithTitle("No")
+        alert.addButtonWithTitle("Yes")
+        alert.show()
+    }
+    
+    func alertView(alertView: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
+        if buttonIndex == 1 {
+            if self.delegate {
+                if self.delegate!.itemDetailViewController(self, willDeleteItem: self.item!) {
+                    self.dismiss()
+                }
+            }
+        }
     }
     
     func textFieldShouldReturn(textField: UITextField!) -> Bool {
