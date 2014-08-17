@@ -22,8 +22,8 @@ import UIKit
 //}
 
 class Item: NSObject, NSCoding {
-    init(title: String, checked: Bool, allowShare: Bool) {
-        self.id = NSUUID()
+    init(id: NSUUID, title: String, checked: Bool, allowShare: Bool) {
+        self.id = id
         self.title = title
         self.checked = checked
         self.allowShare = allowShare
@@ -32,12 +32,12 @@ class Item: NSObject, NSCoding {
         super.init()
     }
     
-    convenience init() {
-        self.init(title: "", checked: false, allowShare: false)
+    convenience init(title: String, checked: Bool, allowShare: Bool) {
+        self.init(id: NSUUID(), title: title, checked: checked, allowShare: allowShare)
     }
     
     convenience init(title: String) {
-        self.init(title: title, checked: false, allowShare: false)
+        self.init(id: NSUUID(), title: title, checked: false, allowShare: false)
     }
     
     init(coder aDecoder: NSCoder!) {
@@ -119,23 +119,25 @@ class DB: NSObject {
     
     // find
     
-    func itemWithTitle(title: String) -> Item? {
-        return DB.findItemWithTitle(title, inItems: self.allItems())
+    func itemWithTitle(title: String) -> Item[] {
+        return DB.findItemsWithTitle(title, inItems: self.allItems())
     }
     
-    func itemWithTitle(title: String, ofDate date: NSDate) -> Item? {
-        return DB.findItemWithTitle(title, inItems: self.itemsOfDay(date))
+    func itemWithTitle(title: String, ofDate date: NSDate) -> Item[] {
+        return DB.findItemsWithTitle(title, inItems: self.itemsOfDay(date))
     }
     
-    class func findItemWithTitle(title: String, inItems items: NSArray) -> Item? {
+    class func findItemsWithTitle(title: String, inItems items: NSArray) -> Item[] {
+        var result = Item[]()
+        
         for object : AnyObject in items {
             var item = object as Item
             println("\(title), \(item.title)")
             if item.title == title {
-                return item;
+                result.append(item)
             }
         }
-        return nil
+        return result
     }
     
     func hasDuplicateItem(item: Item) -> Bool {
@@ -147,10 +149,12 @@ class DB: NSObject {
     }
     
     class func hasDuplicateItem(item: Item, inItems items: NSArray) -> Bool {
-        var item2 = self.findItemWithTitle(item.title, inItems: items)
-        if item2 {
-            println("\(item2!.id), \(item.id)")
-            return !item2!.id.isEqual(item.id)
+        var result = self.findItemsWithTitle(item.title, inItems: items)
+        for item2 in result {
+            println("\(item2.id), \(item.id)")
+            if !item2.id.isEqual(item.id) {
+                return true
+            }
         }
         return false
     }

@@ -362,7 +362,13 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate {
     func save() {
         if delegate {
             if !titleField!.text.isEmpty {
-                var item2 = Item(title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
+                var item2: Item!
+                if self.item {
+                    item2 = Item(id:self.item!.id, title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
+                }
+                else {
+                    item2 = Item(title: titleField!.text, checked: checkedSwitch!.on, allowShare: allowShareSwitch!.on)
+                }
                 if delegate!.itemDetailViewController(self, finishedEditingItem:self.item, withNewItem: item2) {
                     self.dismiss()
                 }
