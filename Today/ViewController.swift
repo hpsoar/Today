@@ -78,9 +78,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
      
         cell!.delegate = self
         cell!.margin = 5
-        cell!.updateWithItem(self.items[indexPath.row])
-        cell!.selected = false
+        var item = self.items[indexPath.row]
+        cell!.updateWithItem(item)
         
+        if item.checked {
+            tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None)
+        }
+
         return cell;
     }
     
@@ -91,16 +95,35 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return height < 66 ? 66 : height
     }
     
-//    func tableView(tableView: UITableView!, willSelectRowAtIndexPath indexPath: NSIndexPath!) -> NSIndexPath! {
-//        self.showDetailForCell(tableView.cellForRowAtIndexPath(indexPath) as TodayItemCell)
-//        return nil
-//    }
-    
-    func deleteSelectedForCell(cell: TodayItemCell) {
-        
+    func tableView(tableView: UITableView!, willSelectRowAtIndexPath indexPath: NSIndexPath!) -> NSIndexPath! {
+        return self.willChangeSelection(true, atRow: indexPath)
     }
     
-    func showDetailForCell(cell: TodayItemCell)  {
+    func tableView(tableView: UITableView!, willDeselectRowAtIndexPath indexPath: NSIndexPath!) -> NSIndexPath! {
+        return self.willChangeSelection(false, atRow: indexPath)
+    }
+    
+    func willChangeSelection(selected: Bool, atRow indexPath: NSIndexPath!) -> NSIndexPath! {
+        var cell = self.tableView!.cellForRowAtIndexPath(indexPath) as TodayItemCell
+        if cell.onDeleting {
+            return nil
+        }
+        else {
+            var item = self.items[indexPath.row]
+            item.checked = selected
+            self.saveItems()
+            
+            return indexPath
+        }
+    }
+    
+    func deleteItemForCell(cell: TodayItemCell) {
+        var indexPath = self.tableView!.indexPathForCell(cell)
+        var item = self.items[indexPath.row]
+        self.deleteItem(item)
+    }
+    
+    func showItemDetailForCell(cell: TodayItemCell)  {
         if !self.detailController {
             var indexPath = self.tableView!.indexPathForCell(cell)
             var item = self.items[indexPath.row]
@@ -137,15 +160,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             self.items.append(newItem)
         }
         
-        DB.instance.saveItems(self.items, ofDay: self.date!)
+        self.saveItems()
         self.tableView!.reloadData()
         return true
     }
     
     func itemDetailViewController(controller: ItemDetailViewController, willDeleteItem item: Item) -> Bool  {
-        assert(self.date, "date can't be nil")
+        self.deleteItem(item)
+        return true
+    }
+    
+    func deleteItem(item: Item)  {
         assert(self.tableView, "tableView can't be nil")
-
+        
         var tmp = self.items.filter({ $0 != item })
         var i = self.items.count
         var j = tmp.count
@@ -153,10 +180,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         println("\(tmp), \(self.items)")
         
         self.items = tmp
-        DB.instance.saveItems(self.items, ofDay: self.date!)
+        self.saveItems()
         self.tableView!.reloadData()
+    }
+    
+    func saveItems() {
+        assert(self.date, "date can't be nil")
         
-        return true
+        DB.instance.saveItems(self.items, ofDay: self.date!)
     }
 }
 

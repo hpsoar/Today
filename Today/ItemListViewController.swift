@@ -106,8 +106,7 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    func deleteSelectedForCell(cell: TodayItemCell) {
-        
+    func deleteItemForCell(cell: TodayItemCell) {
     }
     
     func itemDetailViewControllerDismissed(controller: ItemDetailViewController)  {
@@ -115,7 +114,7 @@ class ItemListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     var detailController: ItemDetailViewController?
-    func showDetailForCell(cell: TodayItemCell)  {
+    func showItemDetailForCell(cell: TodayItemCell)  {
         if !detailController {
             var indexPath = self.tableView!.indexPathForCell(cell)
             var item = self.items.objectAtIndex(indexPath.row) as Item

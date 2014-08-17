@@ -30,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 })
             })
         
+        SVProgressHUD.setBackgroundColor(UIColor.blackColor())
+        SVProgressHUD.setForegroundColor(UIColor.whiteColor())
         
         return true
     }

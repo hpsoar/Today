@@ -56,6 +56,10 @@ class Item: NSObject, NSCoding {
         aCoder.encodeInt32(frequency, forKey: "frequency")
     }
     
+    func print() {
+        println("\(id), \(title), \(checked), \(allowShare)")
+    }
+    
     override func isEqual(object: AnyObject!) -> Bool {
         assert(object.isKindOfClass(Item) || object.isKindOfClass(NSString), "object of wrong type", file: __FILE__, line: __LINE__)
         
