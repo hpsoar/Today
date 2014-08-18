@@ -349,6 +349,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertVi
         if self.anchorView {
             self.show(false, fromView: self.anchorView!)
         }
+        SVProgressHUD.dismiss()
     }
     
     override func animationDidStop(anim: CAAnimation!, finished flag: Bool)  {
@@ -371,7 +372,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertVi
         }
     }
     
-    func save() {
+    func save() -> Bool {
         if delegate {
             if !titleField!.text.isEmpty {
                 var item2: Item!
@@ -383,12 +384,14 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertVi
                 }
                 if delegate!.itemDetailViewController(self, finishedEditingItem:self.item, withNewItem: item2) {
                     self.dismiss()
+                    return true
                 }
                 else {
                     SVProgressHUD.showErrorWithStatus("item named \(item2.title) already exists!")
                 }
             }
         }
+        return false
     }
     
     func cancel() {
@@ -416,7 +419,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertVi
     }
     
     func textFieldShouldReturn(textField: UITextField!) -> Bool {
-        return true
+        return self.save()
     }
     
     func textField(textField: UITextField!, shouldChangeCharactersInRange range: NSRange, replacementString string: String!) -> Bool {

@@ -67,6 +67,7 @@ class TodayItemCell: UITableViewCell {
 
     var titleView: ItemTitleView!
     var deleteBtn: UIButton!
+    var deleteBtnContainer: UIView!
     var container: UIView!
     
     var delegate: TodayItemCellDelegate?
@@ -97,12 +98,13 @@ class TodayItemCell: UITableViewCell {
         
         container = UIView(frame: redView.frame)
         container.clipsToBounds = true
+        container.layer.cornerRadius = 5
         self.contentView.addSubview(container)
         
         titleView = ItemTitleView(frame: CGRectInset(container.bounds, 2, 2))
         container.addSubview(titleView)
         
-        deleteBtn = UIButton(frame: CGRectMake(310, 10, 70, 36))
+        deleteBtn = UIButton(frame: CGRectMake(0, 0, 70, container.frame.height))
         deleteBtn.layer.cornerRadius = 5
         deleteBtn.backgroundColor = UIColor.orangeColor()
         var btnBk = deleteBtn.snapshot()
@@ -110,7 +112,11 @@ class TodayItemCell: UITableViewCell {
         deleteBtn.setTitle("Delete", forState: UIControlState.Normal)
         deleteBtn.addTarget(self, action: "delete", forControlEvents: UIControlEvents.TouchUpInside)
         
-        container.addSubview(deleteBtn)
+        deleteBtnContainer = UIView(x: 310, y: 0, width: 100, height: container.frame.height)
+        deleteBtnContainer.backgroundColor = UIColor.orangeColor()
+        deleteBtnContainer.addSubview(deleteBtn)
+        
+        container.addSubview(deleteBtnContainer)
         
         self.userInteractionEnabled = true
         
@@ -164,7 +170,9 @@ class TodayItemCell: UITableViewCell {
     var onDeleting = false
     
     func showDeleteBtn() {
-        self.showDeleteBtn(true)
+        if !onDeleting {
+            self.showDeleteBtn(true)
+        }
     }
     
     var test: UILabel!
@@ -173,23 +181,23 @@ class TodayItemCell: UITableViewCell {
             self.onDeleting = show
         }
         
-        var offset: CGFloat = self.deleteBtn.frame.size.width + 10
-        self.deleteBtn.alpha = 1
+        var offset: CGFloat = self.deleteBtn.frame.size.width
+        self.deleteBtnContainer.alpha = 1
         if show {
             offset *= -1
-            self.deleteBtn.alpha = 0
+            self.deleteBtnContainer.alpha = 0
         }
         
         var duration = 0.3
-        UIView.animateWithDuration(duration, animations:
+        UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 1.0, options: nil,animations:
             {
                 self.titleView.adjustFrameWithOffset(offset, duration: duration)
                 
-                var frame = self.deleteBtn.frame
+                var frame = self.deleteBtnContainer.frame
                 frame.origin.x += offset
-                self.deleteBtn.frame = frame
+                self.deleteBtnContainer.frame = frame
                 
-                self.deleteBtn.alpha = show ? 1 : 0
+                self.deleteBtnContainer.alpha = show ? 1 : 0
                 
             }, completion: {
                 finished in

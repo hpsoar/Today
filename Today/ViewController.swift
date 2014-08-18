@@ -47,22 +47,29 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func addItem() {
         if !self.detailController {
-            var detailController = ItemDetailViewController(item: nil)
-            
-            detailController.delegate = self
-            
             var view:UIView? = self.navigationItem.rightBarButtonItem.valueForKey("view") as? UIView
-            
-            if (view) {
+            if view {
+                var detailController = ItemDetailViewController(item: nil)
+                
+                detailController.delegate = self
+                
                 detailController.showFromView(view!)
+                
+                self.detailController = detailController
             }
-            
-            self.detailController = detailController
         }
     }
     
+    var menuController: MenuViewController?
     func showMenu() {
+        var view: UIView? = self.navigationItem.leftBarButtonItem.valueForKey("view") as? UIView
         
+        if view {
+            if !menuController {
+                menuController = MenuViewController()
+            }
+            menuController!.showFromView(view!)
+        }
     }
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
