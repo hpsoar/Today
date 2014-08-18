@@ -31,3 +31,12 @@ extension UIView  {
 }
 
 typealias UIViewPointer = AutoreleasingUnsafePointer<UIView?>
+
+extension UIColor {
+    class func color(hexColor: NSInteger) -> UIColor! {
+        var r = CGFloat((hexColor >> 16) & 0xFF) / 255.5
+        var g = CGFloat((hexColor >> 8) & 0xFF) / 255.5
+        var b = CGFloat(hexColor & 0xFF) / 255.5
+        return UIColor(red: r, green: g, blue: b, alpha: 1)
+    }
+}

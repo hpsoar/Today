@@ -189,7 +189,7 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.orangeColor()
+        self.view.backgroundColor = UIColor.color(0x5ac8fa)
         self.view.clipsToBounds = true        
         
         self.topBar = UIView(x: 0, y: 20, width: self.view.width, height: 44)
@@ -252,9 +252,8 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertVi
         if self.item {
             self.deleteBtn = UIButton(frame: CGRectMake(0, 0, 80, 36))
             self.deleteBtn.setTitle("Delete", forState: UIControlState.Normal)
-            self.deleteBtn.setTitleColor(UIColor.redColor(), forState: UIControlState.Normal)
             self.deleteBtn.layer.cornerRadius =  3
-            self.deleteBtn.backgroundColor = UIColor.whiteColor()
+            self.deleteBtn.backgroundColor = UIColor.orangeColor()
             self.deleteBtn.center = CGPointMake(self.buttonContainer.width / 2, self.buttonContainer.height / 2)
             self.deleteBtn.addTarget(self, action: "delete", forControlEvents: UIControlEvents.TouchUpInside)
             self.buttonContainer.addSubview(self.deleteBtn)

@@ -85,3 +85,34 @@ class CloseIcon : UIView {
         CGContextDrawPath(context, kCGPathStroke)
     }
 }
+
+class CheckIcon : UIView {
+    var color: UIColor
+    init(frame: CGRect, color: UIColor) {
+        self.color = color
+        super.init(frame: frame)
+        self.backgroundColor = UIColor.clearColor()
+    }
+    
+    override func drawRect(rect: CGRect)  {
+        var context = UIGraphicsGetCurrentContext();
+        
+        CGContextSetStrokeColorWithColor(context, self.color.CGColor)
+        CGContextSetLineWidth(context, 2.0)
+        
+        var frame = self.frame
+        var factor: CGFloat = 0.25
+        var x1: CGFloat = 1.0
+        var y1: CGFloat = 7.5
+        var x2: CGFloat = 4.0
+        var y2: CGFloat = 10.5
+        var x3: CGFloat = 11.0
+        var y3: CGFloat = 3.0
+        var off: CGFloat = 0.25
+        self.drawLine(1, y1: 7.5, x2: 5, y2: 11.5)
+        self.drawLine(4, y1: 11.5, x2: 12.5, y2: 3)
+       // self.drawLine(4, y1: 10, x2: 11.0, y2: 3.0)
+        
+        CGContextDrawPath(context, kCGPathStroke)
+    }
+}

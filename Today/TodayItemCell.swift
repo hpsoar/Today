@@ -13,9 +13,59 @@ protocol TodayItemCellDelegate {
     func deleteItemForCell(cell: TodayItemCell)
 }
 
+class ItemTitleView: UIView {
+    var titleLabel: UILabel!
+    var checkIcon: CheckIcon!
+    var title: String {
+    get {
+       return titleLabel.text
+    }
+    set {
+        titleLabel.text = newValue
+    }
+    }
+    var selected: Bool {
+    get {
+        return !checkIcon.hidden
+    }
+    set {
+        checkIcon.hidden = !newValue
+    }
+    }
+    
+    init(frame: CGRect) {
+        super.init(frame: frame)
+        self.clipsToBounds = true
+        
+        titleLabel = UILabel(frame: self.bounds)
+        titleLabel.textColor = UIColor.whiteColor()
+        titleLabel.contentMode = UIViewContentMode.Center
+        titleLabel.textAlignment = NSTextAlignment.Center
+        self.addSubview(titleLabel)
+        
+        checkIcon = CheckIcon(frame: CGRectMake(0, 0, 14, 14), color: UIColor.color(0x007aff))
+        self.addSubview(checkIcon)
+        
+        checkIcon.center = CGPointMake(self.frame.width - 15, self.frame.height / 2)
+        titleLabel.frame = CGRectInset(self.bounds, self.frame.width - checkIcon.frame.origin.x, 0)
+    }
+    
+    func adjustFrameWithOffset(offset: CGFloat, duration: Double) {
+        UIView.animateWithDuration(duration, animations: {
+            var p = self.checkIcon.center
+            p.x += offset
+            self.checkIcon.center = p
+            
+            var frame = self.titleLabel.frame
+            frame.size.width += offset
+            self.titleLabel.frame = frame
+            })
+    }
+}
+
 class TodayItemCell: UITableViewCell {
 
-    var titleLabel: UILabel!
+    var titleView: ItemTitleView!
     var deleteBtn: UIButton!
     var container: UIView!
     
@@ -37,24 +87,22 @@ class TodayItemCell: UITableViewCell {
         
         var redView = UIView(frame: CGRectMake(5, 5, 310, 56))
         redView.layer.cornerRadius = 5;
-        redView.backgroundColor = UIColor.redColor()
+        redView.backgroundColor = UIColor.color(0xff3b30)
         self.backgroundView = redView;
         
         var greenView = UIView(frame: redView.bounds);
         greenView.layer.cornerRadius = redView.layer.cornerRadius
-        greenView.backgroundColor = UIColor.greenColor()
+        greenView.backgroundColor = UIColor.color(0x4cd964)
         self.selectedBackgroundView = greenView
         
         container = UIView(frame: redView.frame)
         container.clipsToBounds = true
         self.contentView.addSubview(container)
         
-        titleLabel = UILabel(frame: CGRectInset(container.bounds, 2, 2))
-        titleLabel.textColor = UIColor.whiteColor()
-        titleLabel.textAlignment = NSTextAlignment.Center
+        titleView = ItemTitleView(frame: CGRectInset(container.bounds, 2, 2))
+        container.addSubview(titleView)
         
         deleteBtn = UIButton(frame: CGRectMake(310, 10, 70, 36))
-        deleteBtn.setTitleColor(UIColor.redColor(), forState: UIControlState.Normal)
         deleteBtn.layer.cornerRadius = 5
         deleteBtn.backgroundColor = UIColor.orangeColor()
         var btnBk = deleteBtn.snapshot()
@@ -63,8 +111,6 @@ class TodayItemCell: UITableViewCell {
         deleteBtn.addTarget(self, action: "delete", forControlEvents: UIControlEvents.TouchUpInside)
         
         container.addSubview(deleteBtn)
-        
-        container.addSubview(titleLabel)
         
         self.userInteractionEnabled = true
         
@@ -92,18 +138,13 @@ class TodayItemCell: UITableViewCell {
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        if (selected) {
-            self.accessoryType = UITableViewCellAccessoryType.Checkmark
-        }
-        else {
-            self.accessoryType = UITableViewCellAccessoryType.None
-        }
+        titleView.selected = selected
     }
     
     func updateWithItem(item:Item) {
         item.print()
         
-        titleLabel.text = item.title
+        titleView.title = item.title
         self.selected = item.checked
         
         if self.onDeleting {
@@ -126,8 +167,11 @@ class TodayItemCell: UITableViewCell {
         self.showDeleteBtn(true)
     }
     
+    var test: UILabel!
     func showDeleteBtn(show: Bool) {
-        self.onDeleting = show
+        if show {
+            self.onDeleting = show
+        }
         
         var offset: CGFloat = self.deleteBtn.frame.size.width + 10
         self.deleteBtn.alpha = 1
@@ -136,20 +180,20 @@ class TodayItemCell: UITableViewCell {
             self.deleteBtn.alpha = 0
         }
         
-        UIView.animateWithDuration(0.3, animations:
+        var duration = 0.3
+        UIView.animateWithDuration(duration, animations:
             {
-                var frame = self.titleLabel.frame
-                frame.origin.x += offset
-                self.titleLabel.frame = frame
+                self.titleView.adjustFrameWithOffset(offset, duration: duration)
                 
-                frame = self.deleteBtn.frame
+                var frame = self.deleteBtn.frame
                 frame.origin.x += offset
                 self.deleteBtn.frame = frame
                 
                 self.deleteBtn.alpha = show ? 1 : 0
+                
             }, completion: {
                 finished in
-                
+                self.onDeleting = show
             })
     }
     
