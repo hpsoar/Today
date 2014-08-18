@@ -72,8 +72,6 @@ class TodayItemCell: UITableViewCell {
     
     var delegate: TodayItemCellDelegate?
     var margin: CGFloat = 5
-    var cellColor: UIColor = UIColor.redColor()
-    var cellColorSelected: UIColor = UIColor.greenColor()
     
     class var font: UIFont {
         return UIFont.systemFontOfSize(17)
@@ -88,7 +86,7 @@ class TodayItemCell: UITableViewCell {
         
         var redView = UIView(frame: CGRectMake(5, 5, 310, 56))
         redView.layer.cornerRadius = 5;
-        redView.backgroundColor = UIColor.color(0xff3b30)
+        redView.backgroundColor = UIColor.color(0xff9500)
         self.backgroundView = redView;
         
         var greenView = UIView(frame: redView.bounds);
@@ -106,14 +104,14 @@ class TodayItemCell: UITableViewCell {
         
         deleteBtn = UIButton(frame: CGRectMake(0, 0, 70, container.frame.height))
         deleteBtn.layer.cornerRadius = 5
-        deleteBtn.backgroundColor = UIColor.orangeColor()
+        deleteBtn.backgroundColor = UIColor.color(0xff3b30)
         var btnBk = deleteBtn.snapshot()
         deleteBtn.setBackgroundImage(btnBk, forState: UIControlState.Normal)
         deleteBtn.setTitle("Delete", forState: UIControlState.Normal)
         deleteBtn.addTarget(self, action: "delete", forControlEvents: UIControlEvents.TouchUpInside)
         
         deleteBtnContainer = UIView(x: 310, y: 0, width: 100, height: container.frame.height)
-        deleteBtnContainer.backgroundColor = UIColor.orangeColor()
+        deleteBtnContainer.backgroundColor = deleteBtn.backgroundColor
         deleteBtnContainer.addSubview(deleteBtn)
         
         container.addSubview(deleteBtnContainer)

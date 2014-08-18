@@ -252,8 +252,9 @@ class ItemDetailViewController: UIViewController, UITextFieldDelegate, UIAlertVi
         if self.item {
             self.deleteBtn = UIButton(frame: CGRectMake(0, 0, 80, 36))
             self.deleteBtn.setTitle("Delete", forState: UIControlState.Normal)
-            self.deleteBtn.layer.cornerRadius =  3
-            self.deleteBtn.backgroundColor = UIColor.orangeColor()
+            self.deleteBtn.layer.cornerRadius =  5
+            self.deleteBtn.layer.borderColor = UIColor.whiteColor().CGColor
+            self.deleteBtn.layer.borderWidth = 1
             self.deleteBtn.center = CGPointMake(self.buttonContainer.width / 2, self.buttonContainer.height / 2)
             self.deleteBtn.addTarget(self, action: "delete", forControlEvents: UIControlEvents.TouchUpInside)
             self.buttonContainer.addSubview(self.deleteBtn)
